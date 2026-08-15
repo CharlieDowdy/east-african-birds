@@ -8,221 +8,143 @@
 
 <style>
 *{box-sizing:border-box}
-
 :root{
   --green:#123b2a;
   --green2:#1d5940;
   --light:#f3f5ef;
-  --card:#ffffff;
   --text:#152019;
   --muted:#68736b;
   --border:#dce4dc;
-  --gold:#d4a72c;
+  --gold:#d4a72c
 }
-
 body{
   margin:0;
   background:var(--light);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
 }
-
 header{
   background:var(--green);
-  color:white;
+  color:#fff;
   padding:30px 18px 28px;
-  border-radius:0 0 30px 30px;
+  border-radius:0 0 30px 30px
 }
-
-header .wrap{
-  max-width:1050px;
-  margin:auto;
-}
-
+.wrap,main{max-width:1050px;margin:auto}
+.wrap{padding:0 18px}
 .logo{
-  font-size:13px;
+  font-size:12px;
   text-transform:uppercase;
   letter-spacing:1.5px;
   opacity:.75;
-  font-weight:700;
+  font-weight:700
 }
-
-h1{
-  margin:5px 0 4px;
-  font-size:32px;
-}
-
-header p{
-  margin:0;
-  opacity:.85;
-}
-
-main{
-  max-width:1050px;
-  margin:auto;
-  padding:18px;
-}
-
+h1{margin:5px 0;font-size:32px}
+header p{margin:0;opacity:.85}
+main{padding:18px}
 .hero{
-  background:white;
+  background:#fff;
   border-radius:22px;
   padding:20px;
   margin-bottom:18px;
-  box-shadow:0 4px 18px #0000000d;
+  box-shadow:0 4px 18px #0000000d
 }
-
-.hero h2{
-  margin:0 0 5px;
-  font-size:23px;
-}
-
-.hero p{
-  margin:0;
-  color:var(--muted);
-}
-
-.searchbox{
-  position:relative;
-  margin-top:18px;
-}
-
+.hero h2{margin:0 0 5px;font-size:23px}
+.hero p{margin:0;color:var(--muted)}
+.searchbox{position:relative;margin-top:18px}
 .search{
   width:100%;
   padding:16px 18px 16px 46px;
   border:1px solid var(--border);
   border-radius:15px;
   font-size:16px;
-  outline:none;
-  background:#fff;
+  outline:none
 }
-
-.search:focus{
-  border-color:var(--green2);
-}
-
+.search:focus{border-color:var(--green2)}
 .search-icon{
   position:absolute;
   left:17px;
   top:14px;
-  font-size:20px;
+  font-size:20px
 }
-
 .bar{
   display:flex;
   gap:8px;
   overflow-x:auto;
   padding:14px 0;
-  scrollbar-width:none;
+  scrollbar-width:none
 }
-
-.bar::-webkit-scrollbar{
-  display:none;
-}
-
+.bar::-webkit-scrollbar{display:none}
 .chip{
   border:1px solid var(--border);
   background:#fff;
-  color:var(--text);
   border-radius:99px;
   padding:9px 14px;
   white-space:nowrap;
   cursor:pointer;
-  font-size:13px;
+  font-size:13px
 }
-
-.chip:hover{
-  border-color:var(--green2);
-}
-
 .chip.on{
   background:var(--green);
   color:#fff;
-  border-color:var(--green);
+  border-color:var(--green)
 }
-
 .stats{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:10px;
-  margin:5px 0 18px;
+  margin-bottom:18px
 }
-
 .stat{
   background:#fff;
   border-radius:16px;
   padding:14px;
-  border:1px solid var(--border);
+  border:1px solid var(--border)
 }
-
 .stat b{
   display:block;
   font-size:22px;
-  color:var(--green);
+  color:var(--green)
 }
-
-.stat span{
-  color:var(--muted);
-  font-size:12px;
-}
-
+.stat span{color:var(--muted);font-size:12px}
 .section-title{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  margin:20px 0 10px;
+  align-items:center;
+  margin:20px 0 10px
 }
-
-.section-title h2{
-  margin:0;
-  font-size:21px;
-}
-
+.section-title h2{margin:0;font-size:21px}
 .sort{
   border:1px solid var(--border);
-  background:white;
+  background:#fff;
   border-radius:10px;
-  padding:8px;
+  padding:8px
 }
-
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(245px,1fr));
-  gap:14px;
+  gap:14px
 }
-
 .card{
   background:#fff;
   border-radius:20px;
   overflow:hidden;
   box-shadow:0 4px 16px #0000000c;
-  border:1px solid #e4e9e4;
-  transition:transform .15s,box-shadow .15s;
+  border:1px solid #e4e9e4
 }
-
-.card:hover{
-  transform:translateY(-2px);
-  box-shadow:0 7px 22px #00000015;
-}
-
 .thumb{
   height:175px;
   background:#e1eadf;
   display:grid;
   place-items:center;
   position:relative;
-  overflow:hidden;
+  overflow:hidden
 }
-
 .thumb img{
   width:100%;
   height:100%;
-  object-fit:cover;
+  object-fit:cover
 }
-
-.placeholder{
-  font-size:55px;
-}
-
+.placeholder{font-size:55px}
 .seen-badge{
   position:absolute;
   top:10px;
@@ -232,85 +154,60 @@ main{
   padding:6px 9px;
   font-size:12px;
   font-weight:700;
-  box-shadow:0 2px 8px #0002;
+  z-index:2
 }
-
-.card-body{
-  padding:15px;
-}
-
-.card h2{
-  font-size:19px;
-  margin:0 0 3px;
-}
-
-.sci{
-  font-style:italic;
-  color:var(--muted);
-  font-size:13px;
-}
-
+.card-body{padding:15px}
+.card h2{font-size:19px;margin:0 0 3px}
+.sci{font-style:italic;color:var(--muted);font-size:13px}
 .tag{
   display:inline-block;
   background:#eef3ee;
   border-radius:8px;
   padding:5px 8px;
   margin:9px 3px 0 0;
-  font-size:11px;
+  font-size:11px
 }
-
-.danger{
-  background:#f5e0dc;
-}
-
+.danger{background:#f5e0dc}
 .btn{
   border:0;
   border-radius:11px;
   padding:10px 13px;
   background:var(--green);
-  color:white;
+  color:#fff;
   font-weight:700;
   margin-top:11px;
-  cursor:pointer;
+  cursor:pointer
 }
-
 .btn.secondary{
   background:#eef3ee;
-  color:var(--green);
+  color:var(--green)
 }
-
-.btn.full{
-  width:100%;
-}
-
+.btn.full{width:100%}
 .empty{
-  background:white;
+  background:#fff;
   padding:35px 20px;
   text-align:center;
   border-radius:18px;
-  color:var(--muted);
+  color:var(--muted)
 }
-
 .modal{
   position:fixed;
   inset:0;
   background:#0009;
   display:none;
   align-items:flex-end;
-  z-index:20;
+  z-index:20
 }
-
 .sheet{
-  background:white;
+  background:#fff;
   width:100%;
   max-width:800px;
   margin:auto;
   border-radius:26px 26px 0 0;
   padding:22px;
   max-height:92vh;
-  overflow:auto;
+  overflow:auto
 }
-
 .x{
   float:right;
   border:0;
@@ -319,66 +216,51 @@ main{
   width:36px;
   height:36px;
   font-size:20px;
-  cursor:pointer;
+  cursor:pointer
 }
-
-.detail-photo{
-  width:100%;
-  height:300px;
-  object-fit:cover;
-  border-radius:18px;
-  margin:8px 0 15px;
-}
-
-.detail h1{
-  color:var(--text);
-  font-size:29px;
-  margin:0;
-}
-
-.detail h3{
-  margin-top:24px;
-}
-
+.detail h1{font-size:29px;color:var(--text)}
 .info-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:9px;
+  gap:9px
 }
-
 .info{
   background:#f3f6f2;
   padding:12px;
-  border-radius:12px;
+  border-radius:12px
 }
-
 .info b{
   display:block;
   font-size:11px;
   text-transform:uppercase;
   color:var(--muted);
-  margin-bottom:3px;
+  margin-bottom:3px
 }
-
+.detail-section{
+  margin-top:23px
+}
+.detail-section h3{
+  margin-bottom:7px
+}
+.detail-section p{
+  line-height:1.55
+}
 .photos{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:9px;
+  gap:9px
 }
-
 .photos img{
   width:100%;
   height:190px;
   object-fit:cover;
-  border-radius:13px;
+  border-radius:13px
 }
-
 .credit{
   font-size:11px;
   color:var(--muted);
-  margin-top:4px;
+  margin-top:4px
 }
-
 .notes{
   width:100%;
   min-height:100px;
@@ -386,26 +268,8 @@ main{
   border-radius:13px;
   padding:12px;
   font:inherit;
-  resize:vertical;
+  resize:vertical
 }
-
-.life-header{
-  background:var(--green);
-  color:white;
-  border-radius:20px;
-  padding:20px;
-  margin-bottom:18px;
-}
-
-.life-header h2{
-  margin:0;
-}
-
-.life-header p{
-  margin:5px 0 0;
-  opacity:.8;
-}
-
 .tabs{
   position:sticky;
   bottom:10px;
@@ -416,30 +280,26 @@ main{
   justify-content:space-around;
   box-shadow:0 5px 24px #0002;
   margin-top:25px;
-  z-index:5;
+  z-index:5
 }
-
 .tabs button{
   border:0;
   background:none;
   padding:11px 15px;
   font-weight:700;
   cursor:pointer;
-  border-radius:12px;
+  border-radius:12px
 }
-
 .tabs button.active{
   background:#eef3ee;
-  color:var(--green);
+  color:var(--green)
 }
-
 .footer{
   text-align:center;
   color:var(--muted);
   font-size:12px;
-  padding:30px 10px 15px;
+  padding:30px 10px 15px
 }
-
 @media(max-width:600px){
   h1{font-size:28px}
   .stats{grid-template-columns:1fr 1fr}
@@ -462,67 +322,67 @@ main{
 
 <main>
 
-  <section class="hero">
-    <h2>Discover East African birds</h2>
-    <p>Search the database, explore families and keep track of the birds you've seen.</p>
+<section class="hero">
+  <h2>Discover East African birds</h2>
+  <p>
+    Search species, explore bird families and learn about
+    identification, habitat, range, behaviour and conservation.
+  </p>
 
-    <div class="searchbox">
-      <span class="search-icon">🔎</span>
-      <input
-        id="q"
-        class="search"
-        placeholder="Search by bird, scientific name, family or order..."
-        autocomplete="off"
-      >
-    </div>
-  </section>
+  <div class="searchbox">
+    <span class="search-icon">🔎</span>
+    <input id="q" class="search"
+      placeholder="Search bird, scientific name, family or order..."
+      autocomplete="off">
+  </div>
+</section>
 
-  <div id="stats" class="stats">
-    <div class="stat">
-      <b id="loaded">0</b>
-      <span>Bird species</span>
-    </div>
-
-    <div class="stat">
-      <b id="families">0</b>
-      <span>Families</span>
-    </div>
-
-    <div class="stat">
-      <b id="seenCount">0</b>
-      <span>On your Life List</span>
-    </div>
+<div class="stats">
+  <div class="stat">
+    <b id="loaded">0</b>
+    <span>Bird species</span>
   </div>
 
-  <div class="section-title">
-    <h2>Browse families</h2>
+  <div class="stat">
+    <b id="families">0</b>
+    <span>Families</span>
   </div>
 
-  <div id="bar" class="bar"></div>
-
-  <div class="section-title">
-    <h2 id="resultsTitle">All birds</h2>
-
-    <select id="sort" class="sort">
-      <option value="name">A–Z</option>
-      <option value="scientific">Scientific</option>
-      <option value="family">Family</option>
-    </select>
+  <div class="stat">
+    <b id="seenCount">0</b>
+    <span>Life List</span>
   </div>
+</div>
 
-  <div id="grid" class="grid"></div>
+<div class="section-title">
+  <h2>Browse families</h2>
+</div>
 
-  <div class="footer">
-    <p>East African Birds</p>
-    <p>Taxonomy: Avibase Eastern Africa / Clements 2025</p>
-    <p>Photographs: iNaturalist • Individually licensed media only</p>
-  </div>
+<div id="bar" class="bar"></div>
 
-  <div class="tabs">
-    <button id="exploreTab" class="active" onclick="showExplore()">🔎 Explore</button>
-    <button id="lifeTab" onclick="showLife()">⭐ Life List</button>
-    <button onclick="about()">ℹ️ About</button>
-  </div>
+<div class="section-title">
+  <h2 id="resultsTitle">All birds</h2>
+
+  <select id="sort" class="sort">
+    <option value="name">A–Z</option>
+    <option value="scientific">Scientific</option>
+    <option value="family">Family</option>
+  </select>
+</div>
+
+<div id="grid" class="grid"></div>
+
+<div class="footer">
+  <p><b>East African Birds</b></p>
+  <p>Taxonomy: Avibase Eastern Africa / Clements 2025</p>
+  <p>Photos: iNaturalist • CC0 / CC BY / CC BY-SA</p>
+</div>
+
+<div class="tabs">
+  <button id="exploreTab" class="active" onclick="showExplore()">🔎 Explore</button>
+  <button id="lifeTab" onclick="showLife()">⭐ Life List</button>
+  <button onclick="about()">ℹ️ About</button>
+</div>
 
 </main>
 
@@ -536,6 +396,7 @@ main{
 <script>
 
 let birds=[];
+let details={};
 let family="All";
 let photoCache={};
 let currentView="explore";
@@ -545,43 +406,39 @@ const bar=document.getElementById("bar");
 const grid=document.getElementById("grid");
 const modal=document.getElementById("modal");
 const detail=document.getElementById("detail");
-const loaded=document.getElementById("loaded");
-const families=document.getElementById("families");
-const seenCount=document.getElementById("seenCount");
 const sort=document.getElementById("sort");
 
+Promise.all([
+  fetch("data/species.json").then(r=>r.json()),
+  fetch("data/species_details.json")
+    .then(r=>r.json())
+    .catch(()=>({species:{}}))
+])
+.then(([database,extra])=>{
 
-// -------------------------
-// LOAD DATABASE
-// -------------------------
-
-fetch("data/species.json")
-.then(r=>{
-  if(!r.ok) throw new Error("Could not load species.json");
-  return r.json();
-})
-.then(data=>{
-  birds=data.species||[];
+  birds=database.species||[];
+  details=extra.species||{};
 
   updateStats();
   renderFamilies();
   render();
+
 })
 .catch(error=>{
+
   console.error(error);
 
   grid.innerHTML=`
     <div class="empty">
-      <h2>Could not load the bird database</h2>
-      <p>Make sure data/species.json exists in the website.</p>
+      <h2>Bird database could not be loaded</h2>
+      <p>Check that data/species.json exists.</p>
     </div>
   `;
+
 });
 
 
-// -------------------------
 // LIFE LIST
-// -------------------------
 
 function getLifeList(){
   return JSON.parse(localStorage.getItem("life")||"[]");
@@ -592,12 +449,14 @@ function isSeen(id){
 }
 
 function addLife(id){
+
   let list=getLifeList();
 
   if(!list.includes(id)){
     list.push(id);
-    localStorage.setItem("life",JSON.stringify(list));
   }
+
+  localStorage.setItem("life",JSON.stringify(list));
 
   updateStats();
   render();
@@ -605,7 +464,9 @@ function addLife(id){
 }
 
 function removeLife(id){
+
   let list=getLifeList().filter(x=>x!==id);
+
   localStorage.setItem("life",JSON.stringify(list));
 
   updateStats();
@@ -614,17 +475,19 @@ function removeLife(id){
 }
 
 
-// -------------------------
 // NOTES
-// -------------------------
 
 function getNote(id){
   return localStorage.getItem("note-"+id)||"";
 }
 
 function saveNote(id){
-  const value=document.getElementById("note-"+id).value;
-  localStorage.setItem("note-"+id,value);
+
+  const box=document.getElementById("note-"+id);
+
+  if(!box)return;
+
+  localStorage.setItem("note-"+id,box.value);
 
   const saved=document.getElementById("saved-"+id);
 
@@ -638,42 +501,35 @@ function saveNote(id){
 }
 
 
-// -------------------------
 // STATS
-// -------------------------
 
 function updateStats(){
 
-  loaded.textContent=birds.length;
+  document.getElementById("loaded").textContent=birds.length;
 
-  const familySet=new Set(
-    birds
-      .map(x=>x.family)
-      .filter(Boolean)
+  const set=new Set(
+    birds.map(x=>x.family).filter(Boolean)
   );
 
-  families.textContent=familySet.size;
+  document.getElementById("families").textContent=set.size;
 
-  seenCount.textContent=getLifeList().length;
+  document.getElementById("seenCount").textContent=
+    getLifeList().length;
 }
 
 
-// -------------------------
-// FAMILY FILTERS
-// -------------------------
+// FAMILIES
 
 function renderFamilies(){
 
-  const familySet=[
+  const fs=[
     "All",
     ...new Set(
-      birds
-        .map(x=>x.family)
-        .filter(Boolean)
+      birds.map(x=>x.family).filter(Boolean)
     )
   ];
 
-  bar.innerHTML=familySet.map(f=>`
+  bar.innerHTML=fs.map(f=>`
 
     <button
       class="chip ${f===family?"on":""}"
@@ -694,27 +550,22 @@ function setFamily(f){
 }
 
 
-// -------------------------
 // SEARCH
-// -------------------------
 
 q.addEventListener("input",render);
 sort.addEventListener("change",render);
 
 
-// -------------------------
-// RENDER BIRDS
-// -------------------------
+// RENDER
 
 function render(){
 
-  let query=q.value.toLowerCase().trim();
+  const query=q.value.toLowerCase().trim();
 
   let list=birds.filter(x=>{
 
-    const matchesFamily=
-      family==="All" ||
-      x.family===family;
+    const familyMatch=
+      family==="All" || x.family===family;
 
     const text=`
       ${x.name||""}
@@ -723,9 +574,8 @@ function render(){
       ${x.order||""}
     `.toLowerCase();
 
-    return matchesFamily && text.includes(query);
+    return familyMatch && text.includes(query);
   });
-
 
   if(currentView==="life"){
 
@@ -735,27 +585,26 @@ function render(){
 
   }
 
-
   list.sort((a,b)=>{
 
     if(sort.value==="scientific"){
-      return (a.scientific||"").localeCompare(b.scientific||"");
+      return (a.scientific||"")
+        .localeCompare(b.scientific||"");
     }
 
     if(sort.value==="family"){
-      return (a.family||"").localeCompare(b.family||"");
+      return (a.family||"")
+        .localeCompare(b.family||"");
     }
 
-    return (a.name||"").localeCompare(b.name||"");
-
+    return (a.name||"")
+      .localeCompare(b.name||"");
   });
-
 
   document.getElementById("resultsTitle").textContent=
     currentView==="life"
-      ? `Your Life List (${list.length})`
-      : `${list.length} birds`;
-
+    ? `Your Life List (${list.length})`
+    : `${list.length} birds`;
 
   if(!list.length){
 
@@ -770,13 +619,11 @@ function render(){
     return;
   }
 
-
   grid.innerHTML=list.map(x=>`
 
     <article class="card">
 
       <div class="thumb" id="t-${x.id}">
-
         <div class="placeholder">🐦</div>
 
         ${
@@ -789,7 +636,7 @@ function render(){
 
       <div class="card-body">
 
-        <h2>${escapeHTML(x.name||"Unknown species")}</h2>
+        <h2>${escapeHTML(x.name||"Unknown")}</h2>
 
         <div class="sci">
           ${escapeHTML(x.scientific||"")}
@@ -807,8 +654,6 @@ function render(){
           : ""
         }
 
-        <br>
-
         <button
           class="btn full"
           onclick='openBird(${JSON.stringify(x.id)})'
@@ -822,19 +667,11 @@ function render(){
 
   `).join("");
 
-
-  // Load photos after cards are rendered
-
-  list
-    .slice(0,40)
-    .forEach(x=>loadThumb(x));
-
+  list.slice(0,40).forEach(loadThumb);
 }
 
 
-// -------------------------
-// THUMBNAILS
-// -------------------------
+// INATURALIST PHOTOS
 
 async function api(params){
 
@@ -843,7 +680,7 @@ async function api(params){
     +params
     +"&photo_license=cc0,cc-by,cc-by-sa"
     +"&quality_grade=research"
-    +"&per_page=3"
+    +"&per_page=6"
     +"&order_by=votes"
     +"&order=desc";
 
@@ -858,31 +695,26 @@ async function api(params){
     return await response.json();
 
   }catch{
-
     return {results:[]};
-
   }
-
 }
 
 
 async function loadThumb(x){
 
-  if(photoCache[x.id]!==undefined) return;
+  if(photoCache[x.id]!==undefined)return;
 
-  const data=
-    await api(
-      "taxon_name="+
-      encodeURIComponent(x.scientific)
-    );
+  const data=await api(
+    "taxon_name="+
+    encodeURIComponent(x.scientific)
+  );
 
   const photo=
     data.results
       ?.flatMap(o=>o.photos||[])
       .find(p=>
-        p.license_code==="cc0" ||
-        p.license_code==="cc-by" ||
-        p.license_code==="cc-by-sa"
+        ["cc0","cc-by","cc-by-sa"]
+        .includes(p.license_code)
       );
 
   photoCache[x.id]=photo||null;
@@ -910,50 +742,50 @@ async function loadThumb(x){
         alt="${escapeHTML(x.name)}"
         loading="lazy"
       >
-
     `;
-
   }
-
 }
 
 
-// -------------------------
-// SPECIES DETAIL
-// -------------------------
+// SPECIES PAGE
 
 async function openBird(id){
 
-  const x=birds.find(y=>y.id===id);
+  const bird=birds.find(x=>x.id===id);
 
-  if(!x)return;
+  if(!bird)return;
 
+  const info=details[id]||{};
 
   const seen=isSeen(id);
 
   detail.innerHTML=`
 
-    <h1>${escapeHTML(x.name||"Unknown species")}</h1>
+    <h1>${escapeHTML(bird.name||"Unknown species")}</h1>
 
     <p class="sci">
-      ${escapeHTML(x.scientific||"")}
+      ${escapeHTML(bird.scientific||"")}
     </p>
 
     <div class="info-grid">
 
       <div class="info">
         <b>Order</b>
-        ${escapeHTML(x.order||"Not recorded")}
+        ${escapeHTML(bird.order||"Not recorded")}
       </div>
 
       <div class="info">
         <b>Family</b>
-        ${escapeHTML(x.family||"Not recorded")}
+        ${escapeHTML(bird.family||"Not recorded")}
       </div>
 
       <div class="info">
-        <b>Status</b>
-        ${escapeHTML(x.status||"Not recorded")}
+        <b>Conservation</b>
+        ${escapeHTML(
+          info.conservation_status||
+          bird.status||
+          "Not recorded"
+        )}
       </div>
 
       <div class="info">
@@ -963,179 +795,201 @@ async function openBird(id){
 
     </div>
 
-
-    <h3>Photos</h3>
-
-    <div id="photos">
-      Loading licensed photographs...
-    </div>
-
-
-    <h3>About this species</h3>
-
-    <div class="result" style="background:#f3f6f2;padding:15px;border-radius:14px">
-
+    <div class="detail-section">
+      <h3>📖 Identification</h3>
       <p>
-        This species is included in the East African Birds database.
-        More field-guide information can be added to this species record
-        as the database develops.
+        ${escapeHTML(
+          info.identification||
+          "Identification information has not yet been added."
+        )}
       </p>
+    </div>
+
+    <div class="detail-section">
+      <h3>🌿 Habitat</h3>
+      <p>
+        ${escapeHTML(
+          info.habitat||
+          "Habitat information has not yet been added."
+        )}
+      </p>
+    </div>
+
+    <div class="detail-section">
+      <h3>📍 Distribution</h3>
+      <p>
+        ${escapeHTML(
+          info.distribution||
+          "Distribution information has not yet been added."
+        )}
+      </p>
+    </div>
+
+    <div class="detail-section">
+      <h3>🪶 Behaviour</h3>
+      <p>
+        ${escapeHTML(
+          info.behaviour||
+          "Behaviour information has not yet been added."
+        )}
+      </p>
+    </div>
+
+    <div class="detail-section">
+      <h3>🔊 Voice</h3>
+      <p>
+        ${escapeHTML(
+          info.voice||
+          "Voice information has not yet been added."
+        )}
+      </p>
+    </div>
+
+    <div class="detail-section">
+      <h3>📸 Photos</h3>
+      <div id="photos">
+        Loading licensed photographs...
+      </div>
+    </div>
+
+    <div class="detail-section">
+
+      <h3>⭐ My observation</h3>
+
+      <button
+        class="btn ${seen?"secondary":""}"
+        onclick='${seen?"removeLife":"addLife"}(${JSON.stringify(id)})'
+      >
+        ${
+          seen
+          ? "⭐ Remove from Life List"
+          : "⭐ Add to Life List"
+        }
+      </button>
 
     </div>
 
+    <div class="detail-section">
 
-    <h3>My observation</h3>
+      <h3>📝 My notes</h3>
 
-    <button
-      class="btn ${seen?"secondary":""}"
-      onclick='${seen?"removeLife":"addLife"}(${JSON.stringify(id)})'
-    >
-      ${seen?"⭐ Remove from Life List":"⭐ Add to Life List"}
-    </button>
+      <textarea
+        id="note-${id}"
+        class="notes"
+        placeholder="Add your own field notes..."
+      >${escapeHTML(getNote(id))}</textarea>
 
+      <button
+        class="btn"
+        onclick='saveNote(${JSON.stringify(id)})'
+      >
+        Save notes
+      </button>
 
-    <h3>Personal notes</h3>
+      <span
+        id="saved-${id}"
+        style="margin-left:8px;color:#1d5940;font-weight:600"
+      ></span>
 
-    <textarea
-      id="note-${id}"
-      class="notes"
-      placeholder="Add your own notes about this bird..."
-    >${escapeHTML(getNote(id))}</textarea>
-
-    <button
-      class="btn"
-      onclick='saveNote(${JSON.stringify(id)})'
-    >
-      Save notes
-    </button>
-
-    <span
-      id="saved-${id}"
-      style="margin-left:8px;color:#1d5940;font-weight:600"
-    ></span>
+    </div>
 
   `;
 
-
   modal.style.display="flex";
 
-  loadPhotos(x);
-
+  loadPhotos(bird);
 }
 
 
-async function loadPhotos(x){
+// PHOTOS
+
+async function loadPhotos(bird){
 
   const container=document.getElementById("photos");
 
-  const data=
-    await api(
-      "taxon_name="+
-      encodeURIComponent(x.scientific)
-    );
-
+  const data=await api(
+    "taxon_name="+
+    encodeURIComponent(bird.scientific)
+  );
 
   let all=[];
-
 
   for(const observation of data.results||[]){
 
     for(const photo of observation.photos||[]){
 
       if(
-        (
-          photo.license_code==="cc0" ||
-          photo.license_code==="cc-by" ||
-          photo.license_code==="cc-by-sa"
-        ) &&
-        !all.some(p=>p.id===photo.id)
+        ["cc0","cc-by","cc-by-sa"]
+        .includes(photo.license_code)
+        &&
+        !all.some(x=>x.id===photo.id)
       ){
 
         all.push({
           ...photo,
           observation
         });
-
       }
-
     }
-
   }
 
-
   all=all.slice(0,6);
-
 
   if(!all.length){
 
     container.innerHTML=`
       <div class="empty">
-        No suitable openly licensed photographs found yet.
+        No suitable openly licensed photographs found.
       </div>
     `;
 
     return;
   }
 
-
   container.innerHTML=`
 
     <div class="photos">
 
-      ${all.map(photo=>{
+      ${all.map(photo=>`
 
-        const url=
-          photo.url||
-          photo.original_url;
+        <div>
 
-        return `
+          <img
+            src="${photo.url||photo.original_url}"
+            alt="${escapeHTML(bird.name)}"
+            loading="lazy"
+          >
 
-          <div>
+          <div class="credit">
+            ${escapeHTML(
+              photo.attribution||
+              "Photographer not supplied"
+            )}
 
-            <img
-              src="${url}"
-              alt="${escapeHTML(x.name)}"
-              loading="lazy"
-            >
+            <br>
 
-            <div class="credit">
-
-              ${escapeHTML(
-                photo.attribution||
-                "Photographer not supplied"
-              )}
-
-              <br>
-
-              Licence:
-              ${escapeHTML(
-                photo.license_code||
-                "open licence"
-              )}
-
-            </div>
-
+            Licence:
+            ${escapeHTML(
+              photo.license_code||
+              "open licence"
+            )}
           </div>
 
-        `;
+        </div>
 
-      }).join("")}
+      `).join("")}
 
     </div>
 
   `;
-
 }
 
 
-// -------------------------
 // NAVIGATION
-// -------------------------
 
 function showExplore(){
 
   currentView="explore";
-
   family="All";
 
   document.getElementById("exploreTab")
@@ -1151,14 +1005,12 @@ function showExplore(){
     top:0,
     behavior:"smooth"
   });
-
 }
 
 
 function showLife(){
 
   currentView="life";
-
   family="All";
 
   document.getElementById("lifeTab")
@@ -1174,13 +1026,10 @@ function showLife(){
     top:0,
     behavior:"smooth"
   });
-
 }
 
 
-// -------------------------
 // ABOUT
-// -------------------------
 
 function about(){
 
@@ -1189,65 +1038,58 @@ function about(){
     <h1>About East African Birds</h1>
 
     <p>
-      East African Birds is a field-guide style database
-      designed to help explore the birds of Eastern Africa.
+      A field-guide style database for exploring
+      the birds of Eastern Africa.
     </p>
 
-    <h3>Bird database</h3>
+    <h3>🌍 Coverage</h3>
 
     <p>
-      Taxonomy:
-      <b>Avibase Eastern Africa / Clements 2025</b>
+      The project focuses on the East African region,
+      with particular emphasis on Kenya and neighbouring countries.
     </p>
 
-    <h3>Photographs</h3>
+    <h3>📚 Taxonomy</h3>
+
+    <p>
+      The current database uses Avibase Eastern Africa /
+      Clements 2025 as its taxonomy reference.
+    </p>
+
+    <h3>📸 Photography</h3>
 
     <p>
       Photographs are retrieved from iNaturalist and filtered
       to CC0, CC BY and CC BY-SA licences.
     </p>
 
-    <h3>Your data</h3>
+    <h3>🔐 Your observations</h3>
 
     <p>
-      Your Life List and personal notes are stored locally
-      in your browser using localStorage.
-    </p>
-
-    <p>
-      This means your personal observations are not uploaded
-      to the website.
+      Your Life List and notes are stored locally
+      in your browser.
     </p>
 
   `;
 
   modal.style.display="flex";
-
 }
 
 
-// -------------------------
 // MODAL
-// -------------------------
 
 function closeModal(){
-
   modal.style.display="none";
-
 }
 
 modal.addEventListener("click",e=>{
-
   if(e.target===modal){
     closeModal();
   }
-
 });
 
 
-// -------------------------
-// SAFETY / HTML ESCAPING
-// -------------------------
+// ESCAPE HTML
 
 function escapeHTML(value){
 
@@ -1257,7 +1099,6 @@ function escapeHTML(value){
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
-
 }
 
 </script>
