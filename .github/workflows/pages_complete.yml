@@ -1,0 +1,160 @@
+name: Build and deploy East African Birds
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install parser dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Build complete Avibase database
+        run: |
+          python - <<'PY'
+          import json, re, requests
+          from pathlib import Path
+          from bs4 import BeautifulSoup
+
+          url = "https://avibase.bsc-eoc.org/checklist.jsp?region=AFE"
+
+          r = requests.get(
+              url,
+              timeout=60,
+              headers={"User-Agent": "EastAfricanBirds/1.0"}
+          )
+          r.raise_for_status()
+
+          soup = BeautifulSoup(r.text, "html.parser")
+
+          binomial = re.compile(
+              r"^[A-Z][a-zA-Z'’-]+(?:[- ][a-zA-Z'’-]+)? "
+              r"[a-z][a-zA-Z'’-]+$"
+          )
+
+          records = []
+          seen = set()
+          order = None
+          family = None
+
+          for tr in soup.find_all("tr"):
+              cells = [
+                  re.sub(r"\s+", " ", c.get_text(" ", strip=True)).strip()
+                  for c in tr.find_all(["td", "th"])
+              ]
+
+              cells = [c for c in cells if c]
+
+              if not cells:
+                  continue
+
+              sci = None
+              i = None
+
+              for j, c in enumerate(cells[:5]):
+                  if binomial.match(c):
+                      sci = c
+                      i = j
+                      break
+
+              if not sci or sci in seen:
+                  continue
+
+              common = cells[i - 1] if i else cells[0]
+
+              status = ""
+              if i + 1 < len(cells):
+                  status = cells[i + 1]
+
+              if len(status) > 100:
+                  status = ""
+
+              slug = re.sub(
+                  r"[^a-z0-9]+",
+                  "-",
+                  sci.lower()
+              ).strip("-")
+
+              records.append({
+                  "id": slug,
+                  "name": common,
+                  "scientific": sci,
+                  "order": order,
+                  "family": family,
+                  "status": status or None,
+                  "region": "Eastern Africa",
+                  "media": {
+                      "provider": "iNaturalist",
+                      "allowed_photo_licenses": [
+                          "cc0",
+                          "cc-by",
+                          "cc-by-sa"
+                      ]
+                  }
+              })
+
+              seen.add(sci)
+
+          print(f"Found {len(records)} species")
+
+          if len(records) < 1800:
+              raise SystemExit(
+                  f"Safety check failed: only {len(records)} species found."
+              )
+
+          payload = {
+              "source": "Avibase Eastern Africa checklist",
+              "source_url": url,
+              "taxonomy": "Clements 2025",
+              "region": "Eastern Africa",
+              "listed_species": 1851,
+              "verified_records_loaded": len(records),
+              "species": records
+          }
+
+          Path("data").mkdir(exist_ok=True)
+
+          Path("data/species.json").write_text(
+              json.dumps(
+                  payload,
+                  ensure_ascii=False,
+                  indent=2
+              ),
+              encoding="utf-8"
+          )
+
+          print(f"Database built: {len(records)} species")
+          PY
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
