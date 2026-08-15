@@ -1,0 +1,1114 @@
+{
+  "source": "Avibase Eastern Africa checklist",
+  "source_url": "https://avibase.bsc-eoc.org/checklist.jsp?region=AFE",
+  "taxonomy": "Clements 2025",
+  "listed_species": 1851,
+  "verified_records_loaded": 65,
+  "species": [
+    {
+      "id": "struthio-camelus",
+      "name": "Common Ostrich",
+      "scientific": "Struthio camelus",
+      "order": "Struthioniformes",
+      "family": "Struthionidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "struthio-molybdophanes",
+      "name": "Somali Ostrich",
+      "scientific": "Struthio molybdophanes",
+      "order": "Struthioniformes",
+      "family": "Struthionidae",
+      "status": "Vulnerable",
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "dendrocygna-viduata",
+      "name": "White-faced Whistling-Duck",
+      "scientific": "Dendrocygna viduata",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "dendrocygna-bicolor",
+      "name": "Fulvous Whistling-Duck",
+      "scientific": "Dendrocygna bicolor",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "thalassornis-leuconotus",
+      "name": "White-backed Duck",
+      "scientific": "Thalassornis leuconotus",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "anser-albifrons",
+      "name": "Greater White-fronted Goose",
+      "scientific": "Anser albifrons",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": "Rare/Accidental",
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "cyanochen-cyanoptera",
+      "name": "Blue-winged Goose",
+      "scientific": "Cyanochen cyanoptera",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": "Near-threatened",
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "sarkidiornis-melanotos",
+      "name": "Knob-billed Duck",
+      "scientific": "Sarkidiornis melanotos",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pteronetta-hartlaubii",
+      "name": "Hartlaub's Duck",
+      "scientific": "Pteronetta hartlaubii",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "alopochen-aegyptiaca",
+      "name": "Egyptian Goose",
+      "scientific": "Alopochen aegyptiaca",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "tadorna-ferruginea",
+      "name": "Ruddy Shelduck",
+      "scientific": "Tadorna ferruginea",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "tadorna-cana",
+      "name": "South African Shelduck",
+      "scientific": "Tadorna cana",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "tadorna-tadorna",
+      "name": "Common Shelduck",
+      "scientific": "Tadorna tadorna",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": "Rare/Accidental",
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "plectropterus-gambensis",
+      "name": "Spur-winged Goose",
+      "scientific": "Plectropterus gambensis",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "nettapus-auritus",
+      "name": "African Pygmy-Goose",
+      "scientific": "Nettapus auritus",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "spatula-querquedula",
+      "name": "Garganey",
+      "scientific": "Spatula querquedula",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "spatula-hottentota",
+      "name": "Blue-billed Teal",
+      "scientific": "Spatula hottentota",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "spatula-clypeata",
+      "name": "Northern Shoveler",
+      "scientific": "Spatula clypeata",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "mareca-strepera",
+      "name": "Gadwall",
+      "scientific": "Mareca strepera",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "anas-sparsa",
+      "name": "African Black Duck",
+      "scientific": "Anas sparsa",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "anas-undulata",
+      "name": "Yellow-billed Duck",
+      "scientific": "Anas undulata",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "anas-platyrhynchos",
+      "name": "Mallard",
+      "scientific": "Anas platyrhynchos",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "anas-capensis",
+      "name": "Cape Teal",
+      "scientific": "Anas capensis",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "anas-erythrorhyncha",
+      "name": "Red-billed Duck",
+      "scientific": "Anas erythrorhyncha",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "anas-acuta",
+      "name": "Northern Pintail",
+      "scientific": "Anas acuta",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "anas-crecca",
+      "name": "Green-winged Teal",
+      "scientific": "Anas crecca",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "netta-erythrophthalma",
+      "name": "Southern Pochard",
+      "scientific": "Netta erythrophthalma",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "aythya-ferina",
+      "name": "Common Pochard",
+      "scientific": "Aythya ferina",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": "Vulnerable",
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "aythya-nyroca",
+      "name": "Ferruginous Duck",
+      "scientific": "Aythya nyroca",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": "Near-threatened",
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "aythya-fuligula",
+      "name": "Tufted Duck",
+      "scientific": "Aythya fuligula",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "oxyura-maccoa",
+      "name": "Maccoa Duck",
+      "scientific": "Oxyura maccoa",
+      "order": "Anseriformes",
+      "family": "Anatidae",
+      "status": "Endangered",
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "numida-meleagris",
+      "name": "Helmeted Guineafowl",
+      "scientific": "Numida meleagris",
+      "order": "Galliformes",
+      "family": "Numididae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "acryllium-vulturinum",
+      "name": "Vulturine Guineafowl",
+      "scientific": "Acryllium vulturinum",
+      "order": "Galliformes",
+      "family": "Numididae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "guttera-pucherani",
+      "name": "Eastern Crested Guineafowl",
+      "scientific": "Guttera pucherani",
+      "order": "Galliformes",
+      "family": "Numididae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "guttera-verreauxi",
+      "name": "Western Crested Guineafowl",
+      "scientific": "Guttera verreauxi",
+      "order": "Galliformes",
+      "family": "Numididae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "guttera-edouardi",
+      "name": "Southern Crested Guineafowl",
+      "scientific": "Guttera edouardi",
+      "order": "Galliformes",
+      "family": "Numididae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "ptilopachus-petrosus",
+      "name": "Stone Partridge",
+      "scientific": "Ptilopachus petrosus",
+      "order": "Galliformes",
+      "family": "Odontophoridae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "ptilopachus-nahani",
+      "name": "Nahan's Partridge",
+      "scientific": "Ptilopachus nahani",
+      "order": "Galliformes",
+      "family": "Odontophoridae",
+      "status": "Vulnerable",
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "xenoperdix-udzungwensis",
+      "name": "Udzungwa Partridge",
+      "scientific": "Xenoperdix udzungwensis",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": "Endangered",
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "ortygornis-sephaena",
+      "name": "Crested Francolin",
+      "scientific": "Ortygornis sephaena",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "campocolinus-coqui",
+      "name": "Coqui Francolin",
+      "scientific": "Campocolinus coqui",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "campocolinus-albogularis",
+      "name": "White-throated Francolin",
+      "scientific": "Campocolinus albogularis",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "scleroptila-streptophora",
+      "name": "Ring-necked Francolin",
+      "scientific": "Scleroptila streptophora",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "scleroptila-levaillantii",
+      "name": "Red-winged Francolin",
+      "scientific": "Scleroptila levaillantii",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "scleroptila-psilolaema",
+      "name": "Moorland Francolin",
+      "scientific": "Scleroptila psilolaema",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": "Near-threatened",
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "scleroptila-elgonensis",
+      "name": "Elgon Francolin",
+      "scientific": "Scleroptila elgonensis",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "scleroptila-shelleyi",
+      "name": "Shelley's Francolin",
+      "scientific": "Scleroptila shelleyi",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "coturnix-coturnix",
+      "name": "Common Quail",
+      "scientific": "Coturnix coturnix",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "coturnix-delegorguei",
+      "name": "Harlequin Quail",
+      "scientific": "Coturnix delegorguei",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-nobilis",
+      "name": "Handsome Spurfowl",
+      "scientific": "Pternistis nobilis",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-castaneicollis",
+      "name": "Chestnut-naped Spurfowl",
+      "scientific": "Pternistis castaneicollis",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-erckelii",
+      "name": "Erckel's Spurfowl",
+      "scientific": "Pternistis erckelii",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-ochropectus",
+      "name": "Djibouti Spurfowl",
+      "scientific": "Pternistis ochropectus",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": "Critically endangered",
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-jacksoni",
+      "name": "Jackson's Spurfowl",
+      "scientific": "Pternistis jacksoni",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-adspersus",
+      "name": "Red-billed Spurfowl",
+      "scientific": "Pternistis adspersus",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-natalensis",
+      "name": "Natal Spurfowl",
+      "scientific": "Pternistis natalensis",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-hildebrandti",
+      "name": "Hildebrandt's Spurfowl",
+      "scientific": "Pternistis hildebrandti",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-squamatus",
+      "name": "Scaly Spurfowl",
+      "scientific": "Pternistis squamatus",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-icterorhynchus",
+      "name": "Heuglin's Spurfowl",
+      "scientific": "Pternistis icterorhynchus",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-clappertoni",
+      "name": "Clapperton's Spurfowl",
+      "scientific": "Pternistis clappertoni",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-harwoodi",
+      "name": "Harwood's Spurfowl",
+      "scientific": "Pternistis harwoodi",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": "Near-threatened",
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-swainsonii",
+      "name": "Swainson's Spurfowl",
+      "scientific": "Pternistis swainsonii",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-leucoscepus",
+      "name": "Yellow-necked Spurfowl",
+      "scientific": "Pternistis leucoscepus",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-rufopictus",
+      "name": "Gray-breasted Spurfowl",
+      "scientific": "Pternistis rufopictus",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    },
+    {
+      "id": "pternistis-afer",
+      "name": "Red-necked Spurfowl",
+      "scientific": "Pternistis afer",
+      "order": "Galliformes",
+      "family": "Phasianidae",
+      "status": null,
+      "region": "Eastern Africa",
+      "media": {
+        "provider": "iNaturalist",
+        "allowed_photo_licenses": [
+          "cc0",
+          "cc-by",
+          "cc-by-sa"
+        ]
+      }
+    }
+  ]
+}

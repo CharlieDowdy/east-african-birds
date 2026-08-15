@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#123b2a"><title>East African Birds</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f5ef;color:#152019;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:#123b2a;color:#fff;padding:26px 18px 22px;border-radius:0 0 28px 28px}h1{margin:0;font-size:29px}header p{margin:6px 0 0;opacity:.85}
+main{max-width:1050px;margin:auto;padding:16px}.search{width:100%;padding:15px;border:0;border-radius:15px;font-size:16px;box-shadow:0 3px 16px #0001}
+.bar{display:flex;gap:8px;overflow:auto;padding:13px 0}.chip{border:1px solid #d5ddd5;background:#fff;border-radius:99px;padding:9px 13px;white-space:nowrap}.on{background:#123b2a;color:#fff}
+.stats{display:flex;gap:8px;margin-bottom:15px}.stat{background:#fff;border-radius:14px;padding:12px;flex:1}.stat b{display:block;font-size:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:13px}.card{background:#fff;border-radius:19px;padding:15px;box-shadow:0 4px 16px #0001}.thumb{height:135px;border-radius:14px;overflow:hidden;background:#e1eadf;display:grid;place-items:center}.thumb img{width:100%;height:100%;object-fit:cover}.placeholder{font-size:50px}
+.card h2{font-size:19px;margin:12px 0 3px}.sci{font-style:italic;color:#68736b;font-size:13px}.tag{display:inline-block;background:#eef3ee;border-radius:8px;padding:5px 8px;margin:7px 3px 0 0;font-size:11px}.danger{background:#f5e0dc}.btn{border:0;border-radius:11px;padding:10px 13px;background:#123b2a;color:white;font-weight:600;margin-top:10px}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:end}.sheet{background:white;width:100%;max-width:760px;margin:auto;border-radius:24px 24px 0 0;padding:22px;max-height:90vh;overflow:auto}.x{float:right;border:0;border-radius:50%;width:34px;height:34px}.photos{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.photos img{width:100%;height:180px;object-fit:cover;border-radius:12px}.credit{font-size:12px;color:#59645d}.result{background:#eef3ee;padding:12px;border-radius:13px;margin:8px 0}.tabs{position:sticky;bottom:9px;background:#fff;border-radius:17px;padding:7px;display:flex;justify-content:space-around;box-shadow:0 5px 24px #0002;margin-top:22px}.tabs button{border:0;background:none;padding:10px;font-weight:600}
+</style></head>
+<body><header><h1>🦜 East African Birds</h1><p>Explore • Identify • Record</p></header>
+<main>
+<section class="hero" style="background:#fff;padding:16px;border-radius:18px;margin:15px 0;box-shadow:0 4px 16px #0001">
+<b>📷 Identify a bird</b><p>Choose a photo. The app interface is ready for a trained East-African bird model; it will return ranked candidates and confidence rather than inventing a result.</p>
+<input id="photo" type="file" accept="image/*" style="display:none"><button class="btn" onclick="photo.click()">Choose photo</button>
+<div id="preview"></div></section>
+<input id="q" class="search" placeholder="Search bird, scientific name or family…"><div id="bar" class="bar"></div>
+<div class="stats"><div class="stat"><b id="loaded">0</b>records</div><div class="stat"><b>1,851</b>Avibase listed</div><div class="stat"><b>CC0/BY/BY-SA</b>photo filter</div></div>
+<div id="grid" class="grid"></div>
+<div class="tabs"><button>🔎 Explore</button><button onclick="life()">⭐ Life List</button><button onclick="about()">ℹ️ About</button></div>
+</main>
+<div id="modal" class="modal"><div class="sheet"><button class="x" onclick="modal.style.display='none'">×</button><div id="detail"></div></div></div>
+<script>
+let birds=[],family='All',photoCache={};
+fetch('data/species.json').then(r=>r.json()).then(x=>{birds=x.species;render()});q.oninput=render;
+function render(){let query=q.value.toLowerCase();let fs=['All',...new Set(birds.map(x=>x.family))];bar.innerHTML=fs.map(f=>`<button class="chip ${f==family?'on':''}" onclick="family='${f}';render()">${f}</button>`).join('');
+let list=birds.filter(x=>(family=='All'||x.family==family)&&`${x.name} ${x.scientific} ${x.family} ${x.order}`.toLowerCase().includes(query));loaded.textContent=birds.length;
+grid.innerHTML=list.map((x,i)=>`<article class="card"><div class="thumb" id="t-${x.id}"><div class="placeholder">🐦</div></div><h2>${x.name}</h2><div class="sci">${x.scientific}</div><span class="tag">${x.family}</span>${x.status?`<span class="tag danger">${x.status}</span>`:''}<br><button class="btn" onclick="openBird('${x.id}')">View species</button></article>`).join('');
+list.slice(0,30).forEach(x=>loadThumb(x))}
+async function api(qs){let u='https://api.inaturalist.org/v2/observations?'+qs+'&photo_license=cc0,cc-by,cc-by-sa&quality_grade=research&per_page=2&order_by=votes&order=desc';let r=await fetch(u);return r.ok?r.json():{results:[]}}
+async function loadThumb(x){if(photoCache[x.id]!==undefined)return;let d=await api('taxon_name='+encodeURIComponent(x.scientific));let p=d.results?.flatMap(o=>o.photos||[])[0];photoCache[x.id]=p||null;let el=document.getElementById('t-'+x.id);if(p&&el)el.innerHTML=`<img src="${p.url?.replace('/medium.','/large.')||p.url}" alt="${x.name}">`}
+async function openBird(id){let x=birds.find(y=>y.id==id);detail.innerHTML=`<h1>${x.name}</h1><p class="sci">${x.scientific}</p><p><b>Order:</b> ${x.order} &nbsp; <b>Family:</b> ${x.family}</p>${x.status?`<p><b>Status:</b> ${x.status}</p>`:''}<h3>Licensed photos</h3><div id="photos">Loading individually licensed photos…</div><p class="credit">Photos are fetched only when their associated photo licence is CC0, CC BY or CC BY-SA. Attribution is displayed with each result.</p><h3>Identification</h3><div class="result">AI model slot: upload a photo from the camera area. A trained model will return ranked species and confidence scores here.</div><button class="btn" onclick="addLife('${x.id}')">Add to Life List</button>`;modal.style.display='flex';loadPhotos(x)}
+async function loadPhotos(x){let d=await api('taxon_name='+encodeURIComponent(x.scientific));let all=[];for(let o of (d.results||[])){for(let p of (o.photos||[])){if(!all.some(a=>a.id===p.id))all.push({...p,obs:o})}}all=all.slice(0,6);photos.innerHTML=all.length?`<div class="photos">${all.map(p=>`<div><img src="${p.url||p.original_url}" alt="${x.name}"><div class="credit">${p.attribution||'Photographer not supplied'}<br>Licence: ${p.license_code||'open licence'}</div></div>`).join('')}</div>`:'No suitable licensed photo found yet.'}
+photo.onchange=()=>{let f=photo.files[0];if(!f)return;let u=URL.createObjectURL(f);preview.innerHTML=`<img src="${u}" style="max-width:100%;max-height:300px;border-radius:15px;margin-top:10px"><p>Photo loaded. A trained model is required before returning a genuine species prediction.</p>`}
+function addLife(id){let a=JSON.parse(localStorage.getItem('life')||'[]');if(!a.includes(id))a.push(id);localStorage.setItem('life',JSON.stringify(a));alert('Added to Life List.')}
+function life(){let a=JSON.parse(localStorage.getItem('life')||'[]');alert('Life List: '+a.length+' species')}
+function about(){alert('Taxonomy: Avibase Eastern Africa / Clements 2025. Media: iNaturalist individually filtered for CC0, CC BY and CC BY-SA.')}
+</script></body></html>
