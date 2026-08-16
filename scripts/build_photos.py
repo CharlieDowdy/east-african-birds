@@ -1,16 +1,20 @@
 import json
+import os
+import re
 import time
 from pathlib import Path
+from urllib.parse import quote
 
 import requests
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
-SPECIES_FILE = ROOT / "data/species.json"
-PHOTOS_FILE = ROOT / "data/photos.json"
+SPECIES_FILE = ROOT / "data" / "species.json"
+PHOTOS_FILE = ROOT / "data" / "photos.json"
 
-API = "https://api.inaturalist.org/v2/observations"
+COMMONS_API = "https://commons.wikimedia.org/w/api.php"
+INAT_API = "https://api.inaturalist.org/v2/observations"
 
 OPEN_LICENSES = {
     "cc0",
@@ -18,401 +22,752 @@ OPEN_LICENSES = {
     "cc-by-sa",
 }
 
-# iNaturalist annotation IDs
-FEMALE = ("9", "10")
-MALE = ("9", "11")
-JUVENILE = ("1", "8")
+# ============================================================
+# TEST MODE
+#
+# Keep this at 5 for the first run.
+#
+# After confirming the first 5 birds work, change:
+#
+#     TEST_LIMIT = 5
+#
+# to:
+#
+#     TEST_LIMIT = None
+#
+# ============================================================
+
+TEST_LIMIT = 5
 
 
 session = requests.Session()
 
 session.headers.update({
-    "User-Agent": "EastAfricanBirds/1.0"
+    "User-Agent":
+        "EastAfricanBirds/1.0 "
+        "(https://github.com/CharlieDowdy/east-african-birds)"
 })
 
 
-def request_observations(scientific_name, extra_params=None, per_page=50):
-    params = {
-        "taxon_name": scientific_name,
-        "quality_grade": "research",
-        "per_page": per_page,
-        "order_by": "votes",
-        "order": "desc",
-        "photo_license": "cc0,cc-by,cc-by-sa",
-        "has[]": "photos",
+# ============================================================
+# BASIC HELPERS
+# ============================================================
+
+def load_species():
+
+    data = json.loads(
+        SPECIES_FILE.read_text(
+            encoding="utf-8"
+        )
+    )
+
+    return data.get("species", [])
+
+
+def load_existing():
+
+    if not PHOTOS_FILE.exists():
+        return {}
+
+    try:
+
+        data = json.loads(
+            PHOTOS_FILE.read_text(
+                encoding="utf-8"
+            )
+        )
+
+        # New format
+        if isinstance(data, dict):
+            if "species" in data:
+                return data["species"]
+
+            return data
+
+    except Exception:
+        pass
+
+    return {}
+
+
+def save_database(database):
+
+    payload = {
+        "version": 5,
+        "generated_by":
+            "scripts/build_photos.py",
+        "providers": [
+            "Wikimedia Commons",
+            "iNaturalist"
+        ],
+        "species": database
     }
 
-    if extra_params:
-        params.update(extra_params)
+    PHOTOS_FILE.write_text(
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            indent=2
+        ),
+        encoding="utf-8"
+    )
+
+
+def clean_text(value):
+
+    if not value:
+        return ""
+
+    value = re.sub(
+        r"<[^>]+>",
+        "",
+        str(value)
+    )
+
+    value = value.replace(
+        "&nbsp;",
+        " "
+    )
+
+    value = value.replace(
+        "&amp;",
+        "&"
+    )
+
+    return re.sub(
+        r"\s+",
+        " ",
+        value
+    ).strip()
+
+
+def clean_artist(value):
+
+    return clean_text(value)
+
+
+# ============================================================
+# WIKIMEDIA COMMONS
+# ============================================================
+
+def commons_search(scientific_name):
+
+    params = {
+        "action": "query",
+        "format": "json",
+        "formatversion": "2",
+        "generator": "search",
+
+        "gsrsearch":
+            f'"{scientific_name}"',
+
+        "gsrnamespace": "6",
+        "gsrlimit": "30",
+
+        "prop": "imageinfo",
+
+        "iiprop":
+            "url|mime|size|extmetadata",
+
+        "iiurlwidth": "1200"
+    }
 
     for attempt in range(5):
+
         try:
+
             response = session.get(
-                API,
+                COMMONS_API,
                 params=params,
-                timeout=45,
+                timeout=45
             )
 
             if response.status_code == 429:
-                wait = 10 * (attempt + 1)
-                print(f"  Rate limited. Waiting {wait}s...")
+
+                wait = 5 * (attempt + 1)
+
+                print(
+                    f"  Commons rate limited. "
+                    f"Waiting {wait}s..."
+                )
+
                 time.sleep(wait)
                 continue
 
-            if response.ok:
-                return response.json().get("results", [])
+            response.raise_for_status()
+
+            return response.json()
+
+        except Exception as error:
 
             print(
-                f"  iNaturalist returned HTTP "
-                f"{response.status_code}"
+                f"  Commons error: {error}"
             )
 
-            return []
-
-        except requests.RequestException as error:
-            print(f"  Request error: {error}")
-
             if attempt < 4:
-                time.sleep(5 * (attempt + 1))
+                time.sleep(
+                    3 * (attempt + 1)
+                )
+
+    return {}
+
+
+def is_probably_real_photo(info):
+
+    metadata = (
+        info.get("extmetadata")
+        or {}
+    )
+
+    description = clean_text(
+        metadata.get(
+            "ImageDescription",
+            {}
+        ).get("value", "")
+    ).lower()
+
+    title = clean_text(
+        info.get(
+            "title",
+            ""
+        )
+    ).lower()
+
+    combined = (
+        title + " " + description
+    )
+
+    # Avoid obvious illustrations,
+    # paintings, drawings, maps, etc.
+    bad_words = [
+        "illustration",
+        "illustrated",
+        "drawing",
+        "painting",
+        "watercolor",
+        "watercolour",
+        "engraving",
+        "lithograph",
+        "sketch",
+        "diagram",
+        "map",
+        "statue",
+        "sculpture",
+        "model"
+    ]
+
+    return not any(
+        word in combined
+        for word in bad_words
+    )
+
+
+def commons_photos(scientific_name):
+
+    data = commons_search(
+        scientific_name
+    )
+
+    pages = (
+        data.get("query", {})
+        .get("pages", [])
+    )
+
+    photos = []
+
+    seen = set()
+
+    for page in pages:
+
+        title = page.get(
+            "title",
+            ""
+        )
+
+        if title in seen:
+            continue
+
+        info_list = page.get(
+            "imageinfo",
+            []
+        )
+
+        if not info_list:
+            continue
+
+        info = info_list[0]
+
+        mime = (
+            info.get("mime")
+            or ""
+        ).lower()
+
+        if not mime.startswith(
+            "image/"
+        ):
+            continue
+
+        if not is_probably_real_photo(
+            info
+        ):
+            continue
+
+        metadata = (
+            info.get("extmetadata")
+            or {}
+        )
+
+        license_name = clean_text(
+            metadata.get(
+                "LicenseShortName",
+                {}
+            ).get("value", "")
+        )
+
+        # We only keep licences we can
+        # safely expose in the app.
+        license_lower = (
+            license_name.lower()
+        )
+
+        if not any(
+            x in license_lower
+            for x in [
+                "cc0",
+                "cc by",
+                "cc-by",
+                "public domain"
+            ]
+        ):
+            continue
+
+        url = (
+            info.get("thumburl")
+            or info.get("url")
+        )
+
+        if not url:
+            continue
+
+        artist = clean_artist(
+            metadata.get(
+                "Artist",
+                {}
+            ).get("value", "")
+        )
+
+        source = (
+            "https://commons.wikimedia.org/wiki/"
+            + quote(
+                title.replace(
+                    " ",
+                    "_"
+                )
+            )
+        )
+
+        photos.append({
+            "id":
+                "commons-" + str(
+                    page.get("pageid")
+                ),
+
+            "url": url,
+
+            "source": source,
+
+            "provider":
+                "Wikimedia Commons",
+
+            "license":
+                license_name
+                or "See source",
+
+            "artist":
+                artist
+                or "Unknown",
+
+            "category":
+                "general"
+        })
+
+        seen.add(title)
+
+        if len(photos) >= 8:
+            break
+
+    return photos
+
+
+# ============================================================
+# INATURALIST
+# ============================================================
+
+def inat_observations(
+    scientific_name,
+    term_id=None,
+    term_value_id=None
+):
+
+    params = {
+        "taxon_name":
+            scientific_name,
+
+        "quality_grade":
+            "research",
+
+        "per_page":
+            50,
+
+        "order_by":
+            "votes",
+
+        "order":
+            "desc",
+
+        # IMPORTANT:
+        # This is the correct API filter.
+        "photo_license":
+            "cc0,cc-by,cc-by-sa",
+
+        "has[]":
+            "photos"
+    }
+
+    if term_id is not None:
+        params["term_id"] = str(
+            term_id
+        )
+
+    if term_value_id is not None:
+        params["term_value_id"] = str(
+            term_value_id
+        )
+
+    for attempt in range(6):
+
+        try:
+
+            response = session.get(
+                INAT_API,
+                params=params,
+                timeout=45
+            )
+
+            if response.status_code == 429:
+
+                wait = 10 * (
+                    attempt + 1
+                )
+
+                print(
+                    f"  iNaturalist rate limited. "
+                    f"Waiting {wait}s..."
+                )
+
+                time.sleep(wait)
+                continue
+
+            response.raise_for_status()
+
+            data = response.json()
+
+            return data.get(
+                "results",
+                []
+            )
+
+        except Exception as error:
+
+            print(
+                f"  iNaturalist error: "
+                f"{error}"
+            )
+
+            if attempt < 5:
+                time.sleep(
+                    5 * (attempt + 1)
+                )
 
     return []
 
 
-def get_photo_url(photo):
-    url = (
-        photo.get("url")
-        or photo.get("original_url")
-    )
+def make_inat_photo(
+    photo,
+    observation,
+    category
+):
 
-    if not url:
-        return None
-
-    if "/medium." in url:
-        url = url.replace(
-            "/medium.",
-            "/large."
-        )
-
-    return url
-
-
-def photo_record(photo, observation, category):
     license_code = (
-        photo.get("license_code")
+        photo.get(
+            "license_code"
+        )
         or ""
     ).lower()
 
     if license_code not in OPEN_LICENSES:
         return None
 
-    url = get_photo_url(photo)
+    url = (
+        photo.get("url")
+        or photo.get(
+            "original_url"
+        )
+    )
 
     if not url:
         return None
 
+    # iNaturalist documents replacing
+    # the size component to get another
+    # available size.
+    url = url.replace(
+        "/medium.",
+        "/large."
+    )
+
     return {
-        "id": photo.get("id"),
-        "url": url,
-        "license": license_code,
-        "attribution": (
-            photo.get("attribution")
-            or "Photographer not supplied"
-        ),
-        "observation_id": observation.get("id"),
-        "category": category,
-        "source": "iNaturalist",
+        "id":
+            "inat-" + str(
+                photo.get("id")
+            ),
+
+        "url":
+            url,
+
+        "source":
+            (
+                "https://www.inaturalist.org/"
+                "observations/"
+                + str(
+                    observation.get(
+                        "id"
+                    )
+                )
+            ),
+
+        "provider":
+            "iNaturalist",
+
+        "license":
+            license_code,
+
+        "artist":
+            photo.get(
+                "attribution"
+            )
+            or "Unknown",
+
+        "observation_id":
+            observation.get(
+                "id"
+            ),
+
+        "category":
+            category
     }
 
 
-def get_annotations(observation):
-    """
-    Return annotation pairs such as:
-    ("9", "11") = male
-    ("9", "10") = female
-    ("1", "8") = juvenile
-    """
+def first_annotated_photo(
+    observations,
+    category
+):
 
-    found = set()
+    for observation in observations:
 
-    for annotation in observation.get(
-        "annotations",
-        []
-    ):
-        attribute = annotation.get(
-            "controlled_attribute"
-        ) or {}
+        for photo in observation.get(
+            "photos",
+            []
+        ):
 
-        value = annotation.get(
-            "controlled_value"
-        ) or {}
-
-        attribute_id = str(
-            attribute.get("id", "")
-        )
-
-        value_id = str(
-            value.get("id", "")
-        )
-
-        if attribute_id and value_id:
-            found.add(
-                (attribute_id, value_id)
+            result = make_inat_photo(
+                photo,
+                observation,
+                category
             )
 
-    return found
+            if result:
+                return result
+
+    return None
 
 
-def add_unique(target, record):
-    if not record:
-        return
+# ============================================================
+# BUILD ONE SPECIES
+# ============================================================
 
-    record_id = record.get("id")
-
-    if not record_id:
-        return
-
-    if any(
-        x.get("id") == record_id
-        for x in target
-    ):
-        return
-
-    target.append(record)
-
-
-def collect_species_photos(scientific_name):
-    """
-    First retrieve a large set of good licensed observations.
-
-    We then use iNaturalist annotations to identify:
-      - verified male
-      - verified female
-      - verified juvenile
-
-    We never guess these categories from appearance.
-    """
+def build_species_photos(
+    scientific_name
+):
 
     result = {
         "male": [],
         "female": [],
         "juvenile": [],
-        "general": [],
+        "general": []
     }
 
-    observations = request_observations(
-        scientific_name,
-        per_page=50,
+    # --------------------------------------------------------
+    # 1. GENERAL PHOTOS
+    # --------------------------------------------------------
+
+    print(
+        "  Searching Wikimedia Commons..."
     )
 
-    # Categorise annotated observations.
-    for observation in observations:
+    general = commons_photos(
+        scientific_name
+    )
 
-        annotations = get_annotations(
-            observation
+    result["general"] = general[:8]
+
+    print(
+        f"  Commons general photos: "
+        f"{len(result['general'])}"
+    )
+
+    # --------------------------------------------------------
+    # 2. MALE
+    # Sex = group 9, Male = value 11
+    # --------------------------------------------------------
+
+    print(
+        "  Searching verified male photos..."
+    )
+
+    male_obs = inat_observations(
+        scientific_name,
+        term_id=9,
+        term_value_id=11
+    )
+
+    male = first_annotated_photo(
+        male_obs,
+        "male"
+    )
+
+    if male:
+        result["male"].append(male)
+
+    # --------------------------------------------------------
+    # 3. FEMALE
+    # Sex = group 9, Female = value 10
+    # --------------------------------------------------------
+
+    print(
+        "  Searching verified female photos..."
+    )
+
+    female_obs = inat_observations(
+        scientific_name,
+        term_id=9,
+        term_value_id=10
+    )
+
+    female = first_annotated_photo(
+        female_obs,
+        "female"
+    )
+
+    if female:
+        result["female"].append(
+            female
         )
 
-        photos = observation.get(
-            "photos",
-            []
+    # --------------------------------------------------------
+    # 4. JUVENILE
+    # Life Stage = group 1,
+    # Juvenile = value 8
+    # --------------------------------------------------------
+
+    print(
+        "  Searching verified juvenile photos..."
+    )
+
+    juvenile_obs = inat_observations(
+        scientific_name,
+        term_id=1,
+        term_value_id=8
+    )
+
+    juvenile = first_annotated_photo(
+        juvenile_obs,
+        "juvenile"
+    )
+
+    if juvenile:
+        result["juvenile"].append(
+            juvenile
         )
-
-        for photo in photos:
-
-            license_code = (
-                photo.get("license_code")
-                or ""
-            ).lower()
-
-            if license_code not in OPEN_LICENSES:
-                continue
-
-            # Male
-            if MALE in annotations:
-                add_unique(
-                    result["male"],
-                    photo_record(
-                        photo,
-                        observation,
-                        "male",
-                    )
-                )
-
-            # Female
-            if FEMALE in annotations:
-                add_unique(
-                    result["female"],
-                    photo_record(
-                        photo,
-                        observation,
-                        "female",
-                    )
-                )
-
-            # Juvenile
-            if JUVENILE in annotations:
-                add_unique(
-                    result["juvenile"],
-                    photo_record(
-                        photo,
-                        observation,
-                        "juvenile",
-                    )
-                )
-
-            # General photo
-            add_unique(
-                result["general"],
-                photo_record(
-                    photo,
-                    observation,
-                    "general",
-                )
-            )
-
-    # We only need a few general backup photos.
-    result["general"] = result["general"][:6]
-
-    # If a verified category is missing, make a targeted
-    # request for that annotation.
-    missing_queries = []
-
-    if not result["male"]:
-        missing_queries.append(
-            (
-                "male",
-                {
-                    "term_id": "9",
-                    "term_value_id": "11",
-                },
-            )
-        )
-
-    if not result["female"]:
-        missing_queries.append(
-            (
-                "female",
-                {
-                    "term_id": "9",
-                    "term_value_id": "10",
-                },
-            )
-        )
-
-    if not result["juvenile"]:
-        missing_queries.append(
-            (
-                "juvenile",
-                {
-                    "term_id": "1",
-                    "term_value_id": "8",
-                },
-            )
-        )
-
-    for category, params in missing_queries:
-
-        # Juvenile is optional, so don't spend excessive
-        # requests trying to find one.
-        if (
-            category == "juvenile"
-            and len(observations) >= 20
-        ):
-            continue
-
-        targeted = request_observations(
-            scientific_name,
-            extra_params=params,
-            per_page=10,
-        )
-
-        for observation in targeted:
-
-            annotations = get_annotations(
-                observation
-            )
-
-            # Make absolutely sure the returned observation
-            # actually contains the requested annotation.
-            if params["term_id"] == "9":
-                wanted = (
-                    params["term_id"],
-                    params["term_value_id"],
-                )
-            else:
-                wanted = (
-                    params["term_id"],
-                    params["term_value_id"],
-                )
-
-            if wanted not in annotations:
-                continue
-
-            for photo in observation.get(
-                "photos",
-                []
-            ):
-
-                add_unique(
-                    result[category],
-                    photo_record(
-                        photo,
-                        observation,
-                        category,
-                    )
-                )
-
-                if result[category]:
-                    break
-
-            if result[category]:
-                break
-
-    # Only keep one representative photo for each
-    # sex/life-stage category.
-    result["male"] = result["male"][:1]
-    result["female"] = result["female"][:1]
-    result["juvenile"] = result["juvenile"][:1]
 
     return result
 
 
+# ============================================================
+# MAIN
+# ============================================================
+
 def main():
 
-    database = json.loads(
-        SPECIES_FILE.read_text(
-            encoding="utf-8"
-        )
-    )
+    birds = load_species()
 
-    birds = database.get(
-        "species",
-        []
+    existing = load_existing()
+
+    limit = TEST_LIMIT
+
+    if limit is None:
+        selected = birds
+    else:
+        selected = birds[:limit]
+
+    print()
+    print(
+        "=========================================="
+    )
+    print(
+        "East African Birds Photo Builder"
+    )
+    print(
+        "=========================================="
     )
 
     print(
-        f"Building detailed photo database "
-        f"for {len(birds)} species..."
+        f"Total species in database: "
+        f"{len(birds)}"
     )
 
-    # Start fresh so changing the photo pipeline
-    # actually rebuilds the database.
-    existing = {}
+    print(
+        f"Species being processed: "
+        f"{len(selected)}"
+    )
+
+    print()
 
     for number, bird in enumerate(
-        birds,
+        selected,
         start=1
     ):
 
-        bird_id = bird["id"]
-
-        scientific = bird.get(
-            "scientific"
+        bird_id = bird.get(
+            "id"
         )
+
+        name = bird.get(
+            "name",
+            bird_id
+        )
+
+        scientific = (
+            bird.get(
+                "scientific"
+            )
+            or ""
+        ).strip()
 
         print()
         print(
-            f"[{number}/{len(birds)}] "
-            f"{bird.get('name', bird_id)}"
+            f"[{number}/{len(selected)}] "
+            f"{name}"
         )
 
         print(
@@ -420,101 +775,73 @@ def main():
         )
 
         if not scientific:
-            existing[bird_id] = {
-                "male": [],
-                "female": [],
-                "juvenile": [],
-                "general": [],
-            }
             continue
 
-        photos = collect_species_photos(
+        result = build_species_photos(
             scientific
         )
 
-        existing[bird_id] = photos
+        existing[bird_id] = result
 
+        print()
         print(
-            f"  Male: {len(photos['male'])}"
-        )
-
-        print(
-            f"  Female: {len(photos['female'])}"
+            f"  ✓ Male: "
+            f"{len(result['male'])}"
         )
 
         print(
-            f"  Juvenile: {len(photos['juvenile'])}"
+            f"  ✓ Female: "
+            f"{len(result['female'])}"
         )
 
         print(
-            f"  General: {len(photos['general'])}"
+            f"  ✓ Juvenile: "
+            f"{len(result['juvenile'])}"
         )
 
-        # Save after every bird.
-        PHOTOS_FILE.write_text(
-            json.dumps(
-                existing,
-                ensure_ascii=False,
-                indent=2,
-            ),
-            encoding="utf-8",
+        print(
+            f"  ✓ General: "
+            f"{len(result['general'])}"
         )
 
-        time.sleep(0.35)
+        # Save immediately.
+        save_database(
+            existing
+        )
+
+        # Small pause between species.
+        time.sleep(1)
 
     print()
-    print("=" * 50)
-    print("PHOTO DATABASE COMPLETE")
-    print("=" * 50)
-
-    species_with_male = sum(
-        1
-        for x in existing.values()
-        if x.get("male")
+    print(
+        "=========================================="
     )
-
-    species_with_female = sum(
-        1
-        for x in existing.values()
-        if x.get("female")
+    print(
+        "TEST COMPLETE"
     )
-
-    species_with_juvenile = sum(
-        1
-        for x in existing.values()
-        if x.get("juvenile")
-    )
-
-    total_photos = sum(
-        len(x.get("male", []))
-        + len(x.get("female", []))
-        + len(x.get("juvenile", []))
-        + len(x.get("general", []))
-        for x in existing.values()
+    print(
+        "=========================================="
     )
 
     print(
-        f"Species processed: {len(existing)}"
+        "The database has been saved."
     )
 
-    print(
-        f"Species with verified male photo: "
-        f"{species_with_male}"
-    )
+    if TEST_LIMIT is not None:
 
-    print(
-        f"Species with verified female photo: "
-        f"{species_with_female}"
-    )
+        print()
+        print(
+            "IMPORTANT:"
+        )
 
-    print(
-        f"Species with verified juvenile photo: "
-        f"{species_with_juvenile}"
-    )
+        print(
+            "This was a 5-species test."
+        )
 
-    print(
-        f"Total stored photos: {total_photos}"
-    )
+        print(
+            "Check photos.json before "
+            "running all 1,851 species."
+        )
 
 
 if __name__ == "__main__":
