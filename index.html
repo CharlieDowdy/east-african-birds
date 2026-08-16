@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <meta name="theme-color" content="#123b2a">
 <title>East African Birds</title>
 
@@ -177,7 +176,7 @@ main{
 .sheet{
   background:white;
   width:100%;
-  max-width:850px;
+  max-width:900px;
   margin:auto;
   border-radius:25px 25px 0 0;
   padding:22px;
@@ -212,10 +211,12 @@ main{
   color:#123b2a;
 }
 
+/* FULL-SIZE SPECIES PHOTOS
+   These no longer crop the bird. */
 .photoGrid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-  gap:10px;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;
 }
 
 .photoBox{
@@ -226,16 +227,18 @@ main{
 
 .photoBox img{
   width:100%;
-  height:190px;
-  object-fit:cover;
+  height:auto;
+  max-height:600px;
+  object-fit:contain;
   display:block;
+  background:#eef3ee;
 }
 
 .credit{
   font-size:11px;
   color:#59645d;
-  padding:8px;
-  line-height:1.35;
+  padding:9px;
+  line-height:1.4;
 }
 
 .noPhoto{
@@ -316,10 +319,15 @@ main{
 
   .sheet{
     max-height:96vh;
+    padding:18px;
   }
 
   .photoGrid{
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr;
+  }
+
+  .photoBox img{
+    max-height:none;
   }
 }
 </style>
@@ -346,6 +354,7 @@ main{
   <div id="bar" class="bar"></div>
 
   <div class="stats">
+
     <div class="stat">
       <b id="loaded">0</b>
       species
@@ -358,8 +367,9 @@ main{
 
     <div class="stat">
       <b id="photoCount">—</b>
-      photo records
+      photographs
     </div>
+
   </div>
 
   <div id="grid" class="grid"></div>
@@ -381,9 +391,19 @@ main{
 
 
 <div class="tabs">
-  <button onclick="showExplore()">🔎 Explore</button>
-  <button onclick="showLife()">⭐ Life List</button>
-  <button onclick="about()">ℹ️ About</button>
+
+  <button onclick="showExplore()">
+    🔎 Explore
+  </button>
+
+  <button onclick="showLife()">
+    ⭐ Life List
+  </button>
+
+  <button onclick="about()">
+    ℹ️ About
+  </button>
+
 </div>
 
 </main>
@@ -425,9 +445,15 @@ const detail = document.getElementById("detail");
 // ============================================================
 
 Promise.all([
-  fetch("data/species.json").then(r => r.json()),
-  fetch("data/photos.json").then(r => r.json())
+
+  fetch("data/species.json")
+    .then(r => r.json()),
+
+  fetch("data/photos.json")
+    .then(r => r.json())
+
 ])
+
 .then(([speciesData, photoData]) => {
 
   birds = speciesData.species || [];
@@ -442,7 +468,13 @@ Promise.all([
 
     if (!p) return;
 
-    ["male","female","juvenile","general"].forEach(type => {
+    [
+      "male",
+      "female",
+      "juvenile",
+      "general",
+      "additional"
+    ].forEach(type => {
 
       if (Array.isArray(p[type])) {
         total += p[type].length;
@@ -457,6 +489,7 @@ Promise.all([
   render();
 
 })
+
 .catch(error => {
 
   console.error(error);
@@ -464,7 +497,7 @@ Promise.all([
   grid.innerHTML = `
     <div class="empty">
       <h2>Unable to load the bird database</h2>
-      <p>Please try refreshing the page.</p>
+      <p>Please refresh the page.</p>
     </div>
   `;
 
@@ -489,14 +522,19 @@ function render(){
       .toLowerCase()
       .trim();
 
+
   const families = [
+
     "All",
+
     ...new Set(
       birds
         .map(x => x.family)
         .filter(Boolean)
     )
+
   ];
+
 
   bar.innerHTML =
     families.map(f => {
@@ -505,13 +543,16 @@ function render(){
         String(f)
           .replace(/'/g,"\\'");
 
+
       return `
+
         <button
           class="chip ${f === family ? "on" : ""}"
           onclick="setFamily('${safe}')"
         >
           ${escapeHTML(f)}
         </button>
+
       `;
 
     }).join("");
@@ -524,12 +565,14 @@ function render(){
         family === "All" ||
         x.family === family;
 
+
       const text =
         `${x.name || ""}
          ${x.scientific || ""}
          ${x.family || ""}
          ${x.order || ""}`
         .toLowerCase();
+
 
       return familyMatch &&
         text.includes(query);
@@ -540,10 +583,17 @@ function render(){
   if (!list.length){
 
     grid.innerHTML = `
+
       <div class="empty">
+
         <h2>No birds found</h2>
-        <p>Try another search.</p>
+
+        <p>
+          Try another search.
+        </p>
+
       </div>
+
     `;
 
     return;
@@ -578,61 +628,86 @@ function birdCard(x){
   const p =
     photos[x.id];
 
+
   const image =
     firstPhoto(p);
 
+
   const imageHTML =
     image
+
       ? `
+
         <img
           src="${escapeAttr(image.url)}"
           alt="${escapeAttr(x.name)}"
           loading="lazy"
         >
+
       `
+
       : `
+
         <div class="placeholder">
           🐦
         </div>
+
       `;
 
 
   return `
+
     <article class="card">
 
       <div class="thumb">
         ${imageHTML}
       </div>
 
+
       <h2>
-        ${escapeHTML(x.name || "Unknown")}
+        ${escapeHTML(
+          x.name || "Unknown"
+        )}
       </h2>
 
+
       <div class="sci">
-        ${escapeHTML(x.scientific || "")}
+        ${escapeHTML(
+          x.scientific || ""
+        )}
       </div>
+
 
       ${
         x.family
           ? `
+
             <span class="tag">
               ${escapeHTML(x.family)}
             </span>
+
           `
           : ""
       }
+
 
       ${
         x.status
           ? `
+
             <span class="tag status">
-              ${escapeHTML(formatStatus(x.status))}
+              ${escapeHTML(
+                formatStatus(x.status)
+              )}
             </span>
+
           `
           : ""
       }
 
+
       <br>
+
 
       <button
         class="btn"
@@ -642,6 +717,7 @@ function birdCard(x){
       </button>
 
     </article>
+
   `;
 
 }
@@ -655,18 +731,25 @@ function firstPhoto(p){
 
   if (!p) return null;
 
+
   const order = [
+
     "male",
     "female",
+    "juvenile",
     "general",
-    "juvenile"
+    "additional"
+
   ];
+
 
   for (const type of order){
 
     if (
+
       Array.isArray(p[type]) &&
       p[type].length
+
     ){
 
       return p[type][0];
@@ -674,6 +757,7 @@ function firstPhoto(p){
     }
 
   }
+
 
   return null;
 
@@ -690,6 +774,7 @@ function openBird(id){
     birds.find(
       x => x.id === id
     );
+
 
   if (!bird) return;
 
@@ -716,10 +801,15 @@ function openBird(id){
       : [];
 
 
-  const general =
-    Array.isArray(p.general)
-      ? p.general
-      : [];
+  let additional = [];
+
+
+  if (Array.isArray(p.additional)){
+    additional = p.additional;
+  }
+  else if (Array.isArray(p.general)){
+    additional = p.general;
+  }
 
 
   detail.innerHTML = `
@@ -727,38 +817,65 @@ function openBird(id){
     <div class="detailHero">
 
       <h1>
-        ${escapeHTML(bird.name || "Unknown")}
+        ${escapeHTML(
+          bird.name || "Unknown"
+        )}
       </h1>
 
+
       <p class="sci">
-        ${escapeHTML(bird.scientific || "")}
+        ${escapeHTML(
+          bird.scientific || ""
+        )}
       </p>
+
 
       <div class="infoGrid">
 
         <div class="info">
+
           <b>Order</b>
-          ${escapeHTML(bird.order || "Not recorded")}
+
+          ${escapeHTML(
+            bird.order ||
+            "Not recorded"
+          )}
+
         </div>
 
+
         <div class="info">
+
           <b>Family</b>
-          ${escapeHTML(bird.family || "Not recorded")}
+
+          ${escapeHTML(
+            bird.family ||
+            "Not recorded"
+          )}
+
         </div>
 
+
         <div class="info">
+
           <b>Conservation status</b>
+
           ${escapeHTML(
             formatStatus(
               bird.status ||
               "Not recorded"
             )
           )}
+
         </div>
 
+
         <div class="info">
+
           <b>Region</b>
+
           Eastern Africa
+
         </div>
 
       </div>
@@ -768,52 +885,64 @@ function openBird(id){
 
     ${photoSection(
       "♂ Male",
-      "Male",
+      "male",
       male
     )}
 
 
     ${photoSection(
       "♀ Female",
-      "Female",
+      "female",
       female
     )}
 
 
     ${photoSection(
       "🐣 Juvenile",
-      "Juvenile",
+      "juvenile",
       juvenile
     )}
 
 
     ${photoSection(
       "📷 Additional photographs",
-      "Additional",
-      general
+      "additional",
+      additional
     )}
 
 
     <div class="section">
 
-      <h2>Species information</h2>
+      <h2>
+        Species information
+      </h2>
+
 
       <div class="infoGrid">
 
         <div class="info">
+
           <b>Scientific name</b>
+
           <i>
             ${escapeHTML(
-              bird.scientific || "Unknown"
+              bird.scientific ||
+              "Unknown"
             )}
           </i>
+
         </div>
 
+
         <div class="info">
+
           <b>Species ID</b>
+
           ${escapeHTML(
-            bird.id || "Unknown"
+            bird.id ||
+            "Unknown"
           )}
+
         </div>
 
       </div>
@@ -829,6 +958,7 @@ function openBird(id){
       >
         ⭐ Add to Life List
       </button>
+
 
       <button
         class="btn secondary"
@@ -853,7 +983,7 @@ function openBird(id){
 
 function photoSection(
   title,
-  label,
+  type,
   photosList
 ){
 
@@ -863,25 +993,37 @@ function photoSection(
   ){
 
     return `
+
       <div class="section">
 
-        <h2>${title}</h2>
+        <h2>
+          ${title}
+        </h2>
+
 
         <div class="noPhoto">
-          No suitable ${label.toLowerCase()}
+
+          No suitable
+          ${type}
           photograph was found.
+
         </div>
 
       </div>
+
     `;
 
   }
 
 
   return `
+
     <div class="section">
 
-      <h2>${title}</h2>
+      <h2>
+        ${title}
+      </h2>
+
 
       <div class="photoGrid">
 
@@ -894,6 +1036,7 @@ function photoSection(
       </div>
 
     </div>
+
   `;
 
 }
@@ -905,22 +1048,35 @@ function photoSection(
 
 function photoHTML(p){
 
-  if (!p || !p.url) return "";
+  if (
+    !p ||
+    !p.url
+  ){
+
+    return "";
+
+  }
+
 
   const provider =
     p.provider ||
     "Photo source";
 
+
   const licence =
     p.license ||
+    p.license_code ||
     "Licence not supplied";
+
 
   const artist =
     p.artist ||
+    p.attribution ||
     "Photographer not supplied";
 
 
   return `
+
     <div class="photoBox">
 
       <img
@@ -929,12 +1085,17 @@ function photoHTML(p){
         loading="lazy"
       >
 
+
       <div class="credit">
 
-        <b>${escapeHTML(provider)}</b>
+        <b>
+          ${escapeHTML(provider)}
+        </b>
+
         <br>
 
         ${escapeHTML(artist)}
+
         <br>
 
         Licence:
@@ -943,6 +1104,7 @@ function photoHTML(p){
       </div>
 
     </div>
+
   `;
 
 }
@@ -965,16 +1127,19 @@ function addLife(id){
 
     list.push(id);
 
+
     localStorage.setItem(
       "life",
       JSON.stringify(list)
     );
 
+
     alert(
       "Added to your Life List ⭐"
     );
 
-  }else{
+  }
+  else{
 
     alert(
       "This bird is already on your Life List."
@@ -990,6 +1155,7 @@ function showLife(){
   document.getElementById(
     "explore"
   ).style.display = "none";
+
 
   document.getElementById(
     "lifeList"
@@ -1012,17 +1178,24 @@ function showLife(){
   if (!list.length){
 
     container.innerHTML = `
+
       <div class="empty">
 
-        <h2>Your Life List is empty</h2>
+        <h2>
+          Your Life List is empty
+        </h2>
+
 
         <p>
+
           Open a species and press
           "Add to Life List" when you
           record a bird.
+
         </p>
 
       </div>
+
     `;
 
     return;
@@ -1043,47 +1216,66 @@ function showLife(){
       const p =
         photos[bird.id];
 
+
       const image =
         firstPhoto(p);
 
 
       return `
+
         <div class="lifeCard">
 
           ${
             image
+
               ? `
+
                 <img
-                  src="${escapeAttr(image.url)}"
+                  src="${escapeAttr(
+                    image.url
+                  )}"
                   style="
                     width:100%;
-                    height:170px;
-                    object-fit:cover;
+                    height:auto;
+                    max-height:400px;
+                    object-fit:contain;
                     border-radius:13px;
                   "
                 >
+
               `
+
               : ""
           }
 
+
           <h3>
-            ${escapeHTML(bird.name)}
+            ${escapeHTML(
+              bird.name
+            )}
           </h3>
 
+
           <div class="sci">
+
             ${escapeHTML(
               bird.scientific || ""
             )}
+
           </div>
+
 
           <button
             class="btn"
-            onclick="openBird('${escapeAttr(bird.id)}')"
+            onclick="openBird('${escapeAttr(
+              bird.id
+            )}')"
           >
             View species
           </button>
 
         </div>
+
       `;
 
     }).join("");
@@ -1096,6 +1288,7 @@ function showExplore(){
   document.getElementById(
     "explore"
   ).style.display = "block";
+
 
   document.getElementById(
     "lifeList"
@@ -1111,21 +1304,23 @@ function showExplore(){
 function about(){
 
   alert(
+
 `East African Birds
 
 A field-guide style database for birds of Eastern Africa.
 
 Bird database:
 Avibase Eastern Africa checklist
-Clements 2025 taxonomy
+
+Taxonomy:
+Clements 2025
 
 Photographs:
 Wikimedia Commons
 iNaturalist
 
-Only photographs with the supported open licences are included.
+The app does not use AI bird identification.`
 
-The app does not use AI identification.`
   );
 
 }
@@ -1166,9 +1361,16 @@ function formatStatus(status){
 
   if (!status) return "";
 
+
   return String(status)
-    .replaceAll("_"," ")
-    .replace(/\b\w/g,
+
+    .replaceAll(
+      "_",
+      " "
+    )
+
+    .replace(
+      /\b\w/g,
       c => c.toUpperCase()
     );
 
@@ -1177,12 +1379,34 @@ function formatStatus(status){
 
 function escapeHTML(value){
 
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+  return String(
+    value ?? ""
+  )
+
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
 
 }
 
