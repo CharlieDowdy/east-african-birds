@@ -1,6 +1,8 @@
 name: Build bird photo database
 
 on:
+  push:
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -36,60 +38,36 @@ jobs:
           python - <<'PY'
           import json
 
-          with open(
-              "data/photos.json",
-              encoding="utf-8"
-          ) as f:
+          with open("data/photos.json", encoding="utf-8") as f:
               data = json.load(f)
 
           if "species" in data:
               data = data["species"]
 
           species = len(data)
-
-          with_photos = sum(
-              1
-              for photos in data.values()
-              if photos
-          )
-
+          with_photos = sum(1 for photos in data.values() if photos.get("general"))
           total = sum(
-              len(photos)
+              len(photos.get("male", []))
+              + len(photos.get("female", []))
+              + len(photos.get("juvenile", []))
+              + len(photos.get("general", []))
               for photos in data.values()
           )
 
-          print(
-              "Species processed:",
-              species
-          )
-
-          print(
-              "Species with photos:",
-              with_photos
-          )
-
-          print(
-              "Total photos:",
-              total
-          )
+          print("Species processed:", species)
+          print("Species with verified photos:", with_photos)
+          print("Total verified photos:", total)
           PY
 
       - name: Commit photo database
         run: |
-
-          git config user.name \
-            "East African Birds Bot"
-
-          git config user.email \
-            "41898282+github-actions[bot]@users.noreply.github.com"
-
+          git config user.name "East African Birds Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/photos.json
 
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            git commit \
-              -m "Build licensed bird photo database"
-
+            git commit -m "Rebuild exact-match bird photo database"
             git push
           fi
