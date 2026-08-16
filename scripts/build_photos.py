@@ -1,5 +1,4 @@
 import json
-import os
 import re
 import time
 from pathlib import Path
@@ -25,16 +24,11 @@ OPEN_LICENSES = {
 # ============================================================
 # TEST MODE
 #
-# Keep this at 5 for the first run.
+# Leave this at 5 for now.
 #
-# After confirming the first 5 birds work, change:
+# Once the test works, change it to:
 #
-#     TEST_LIMIT = 5
-#
-# to:
-#
-#     TEST_LIMIT = None
-#
+# TEST_LIMIT = None
 # ============================================================
 
 TEST_LIMIT = 5
@@ -50,7 +44,7 @@ session.headers.update({
 
 
 # ============================================================
-# BASIC HELPERS
+# FILES
 # ============================================================
 
 def load_species():
@@ -77,8 +71,8 @@ def load_existing():
             )
         )
 
-        # New format
         if isinstance(data, dict):
+
             if "species" in data:
                 return data["species"]
 
@@ -93,7 +87,7 @@ def load_existing():
 def save_database(database):
 
     payload = {
-        "version": 5,
+        "version": 6,
         "generated_by":
             "scripts/build_photos.py",
         "providers": [
@@ -112,6 +106,10 @@ def save_database(database):
         encoding="utf-8"
     )
 
+
+# ============================================================
+# TEXT
+# ============================================================
 
 def clean_text(value):
 
@@ -141,34 +139,22 @@ def clean_text(value):
     ).strip()
 
 
-def clean_artist(value):
-
-    return clean_text(value)
-
-
 # ============================================================
 # WIKIMEDIA COMMONS
 # ============================================================
 
-def commons_search(scientific_name):
+def commons_search(query):
 
     params = {
         "action": "query",
         "format": "json",
         "formatversion": "2",
         "generator": "search",
-
-        "gsrsearch":
-            f'"{scientific_name}"',
-
+        "gsrsearch": query,
         "gsrnamespace": "6",
         "gsrlimit": "30",
-
         "prop": "imageinfo",
-
-        "iiprop":
-            "url|mime|size|extmetadata",
-
+        "iiprop": "url|mime|size|extmetadata",
         "iiurlwidth": "1200"
     }
 
@@ -212,12 +198,24 @@ def commons_search(scientific_name):
     return {}
 
 
-def is_probably_real_photo(info):
+def commons_is_photo(info):
+
+    mime = (
+        info.get("mime")
+        or ""
+    ).lower()
+
+    if not mime.startswith("image/"):
+        return False
 
     metadata = (
         info.get("extmetadata")
         or {}
     )
+
+    title = clean_text(
+        info.get("title", "")
+    ).lower()
 
     description = clean_text(
         metadata.get(
@@ -226,20 +224,9 @@ def is_probably_real_photo(info):
         ).get("value", "")
     ).lower()
 
-    title = clean_text(
-        info.get(
-            "title",
-            ""
-        )
-    ).lower()
+    text = title + " " + description
 
-    combined = (
-        title + " " + description
-    )
-
-    # Avoid obvious illustrations,
-    # paintings, drawings, maps, etc.
-    bad_words = [
+    bad = [
         "illustration",
         "illustrated",
         "drawing",
@@ -252,39 +239,89 @@ def is_probably_real_photo(info):
         "diagram",
         "map",
         "statue",
-        "sculpture",
-        "model"
+        "sculpture"
     ]
 
     return not any(
-        word in combined
-        for word in bad_words
+        word in text
+        for word in bad
     )
 
 
-def commons_photos(scientific_name):
+def commons_license(info):
 
-    data = commons_search(
-        scientific_name
+    metadata = (
+        info.get("extmetadata")
+        or {}
     )
+
+    license_name = clean_text(
+        metadata.get(
+            "LicenseShortName",
+            {}
+        ).get("value", "")
+    )
+
+    lower = license_name.lower()
+
+    if "cc0" in lower:
+        return "CC0"
+
+    if "cc by-sa" in lower:
+        return "CC BY-SA"
+
+    if "cc-by-sa" in lower:
+        return "CC BY-SA"
+
+    if "cc by" in lower:
+        return "CC BY"
+
+    if "cc-by" in lower:
+        return "CC BY"
+
+    if "public domain" in lower:
+        return "Public Domain"
+
+    return None
+
+
+def commons_get_photos(
+    scientific_name,
+    category="general",
+    limit=3
+):
+
+    query = (
+        f'"{scientific_name}"'
+    )
+
+    if category == "male":
+        query += " male"
+
+    elif category == "female":
+        query += " female"
+
+    elif category == "juvenile":
+        query += " juvenile"
+
+    data = commons_search(query)
 
     pages = (
         data.get("query", {})
         .get("pages", [])
     )
 
-    photos = []
+    results = []
 
     seen = set()
 
     for page in pages:
 
-        title = page.get(
-            "title",
-            ""
+        page_id = page.get(
+            "pageid"
         )
 
-        if title in seen:
+        if page_id in seen:
             continue
 
         info_list = page.get(
@@ -297,48 +334,14 @@ def commons_photos(scientific_name):
 
         info = info_list[0]
 
-        mime = (
-            info.get("mime")
-            or ""
-        ).lower()
-
-        if not mime.startswith(
-            "image/"
-        ):
+        if not commons_is_photo(info):
             continue
 
-        if not is_probably_real_photo(
+        license_name = commons_license(
             info
-        ):
-            continue
-
-        metadata = (
-            info.get("extmetadata")
-            or {}
         )
 
-        license_name = clean_text(
-            metadata.get(
-                "LicenseShortName",
-                {}
-            ).get("value", "")
-        )
-
-        # We only keep licences we can
-        # safely expose in the app.
-        license_lower = (
-            license_name.lower()
-        )
-
-        if not any(
-            x in license_lower
-            for x in [
-                "cc0",
-                "cc by",
-                "cc-by",
-                "public domain"
-            ]
-        ):
+        if not license_name:
             continue
 
         url = (
@@ -349,11 +352,21 @@ def commons_photos(scientific_name):
         if not url:
             continue
 
-        artist = clean_artist(
+        metadata = (
+            info.get("extmetadata")
+            or {}
+        )
+
+        artist = clean_text(
             metadata.get(
                 "Artist",
                 {}
             ).get("value", "")
+        )
+
+        title = page.get(
+            "title",
+            ""
         )
 
         source = (
@@ -366,47 +379,45 @@ def commons_photos(scientific_name):
             )
         )
 
-        photos.append({
+        results.append({
             "id":
-                "commons-" + str(
-                    page.get("pageid")
-                ),
+                f"commons-{page_id}",
 
-            "url": url,
+            "url":
+                url,
 
-            "source": source,
+            "source":
+                source,
 
             "provider":
                 "Wikimedia Commons",
 
             "license":
-                license_name
-                or "See source",
+                license_name,
 
             "artist":
-                artist
-                or "Unknown",
+                artist or "Unknown",
 
             "category":
-                "general"
+                category
         })
 
-        seen.add(title)
+        seen.add(page_id)
 
-        if len(photos) >= 8:
+        if len(results) >= limit:
             break
 
-    return photos
+    return results
 
 
 # ============================================================
-# INATURALIST
+# iNATURALIST
 # ============================================================
 
-def inat_observations(
+def inat_search(
     scientific_name,
-    term_id=None,
-    term_value_id=None
+    sex=None,
+    juvenile=False
 ):
 
     params = {
@@ -425,8 +436,6 @@ def inat_observations(
         "order":
             "desc",
 
-        # IMPORTANT:
-        # This is the correct API filter.
         "photo_license":
             "cc0,cc-by,cc-by-sa",
 
@@ -434,15 +443,27 @@ def inat_observations(
             "photos"
     }
 
-    if term_id is not None:
-        params["term_id"] = str(
-            term_id
-        )
+    # Sex:
+    # 9 = Sex
+    # 10 = Female
+    # 11 = Male
+    if sex == "male":
 
-    if term_value_id is not None:
-        params["term_value_id"] = str(
-            term_value_id
-        )
+        params["term_id"] = "9"
+        params["term_value_id"] = "11"
+
+    elif sex == "female":
+
+        params["term_id"] = "9"
+        params["term_value_id"] = "10"
+
+    # Life stage:
+    # 1 = Life Stage
+    # 8 = Juvenile
+    elif juvenile:
+
+        params["term_id"] = "1"
+        params["term_value_id"] = "8"
 
     for attempt in range(6):
 
@@ -485,6 +506,7 @@ def inat_observations(
             )
 
             if attempt < 5:
+
                 time.sleep(
                     5 * (attempt + 1)
                 )
@@ -518,9 +540,6 @@ def make_inat_photo(
     if not url:
         return None
 
-    # iNaturalist documents replacing
-    # the size component to get another
-    # available size.
     url = url.replace(
         "/medium.",
         "/large."
@@ -540,9 +559,7 @@ def make_inat_photo(
                 "https://www.inaturalist.org/"
                 "observations/"
                 + str(
-                    observation.get(
-                        "id"
-                    )
+                    observation.get("id")
                 )
             ),
 
@@ -568,17 +585,19 @@ def make_inat_photo(
     }
 
 
-def first_annotated_photo(
+def first_inat_photo(
     observations,
     category
 ):
 
     for observation in observations:
 
-        for photo in observation.get(
+        photos = observation.get(
             "photos",
             []
-        ):
+        )
+
+        for photo in photos:
 
             result = make_inat_photo(
                 photo,
@@ -593,10 +612,10 @@ def first_annotated_photo(
 
 
 # ============================================================
-# BUILD ONE SPECIES
+# ONE SPECIES
 # ============================================================
 
-def build_species_photos(
+def build_species(
     scientific_name
 ):
 
@@ -608,97 +627,126 @@ def build_species_photos(
     }
 
     # --------------------------------------------------------
-    # 1. GENERAL PHOTOS
+    # MALE
     # --------------------------------------------------------
 
     print(
-        "  Searching Wikimedia Commons..."
+        "  Searching verified male..."
     )
 
-    general = commons_photos(
-        scientific_name
-    )
-
-    result["general"] = general[:8]
-
-    print(
-        f"  Commons general photos: "
-        f"{len(result['general'])}"
-    )
-
-    # --------------------------------------------------------
-    # 2. MALE
-    # Sex = group 9, Male = value 11
-    # --------------------------------------------------------
-
-    print(
-        "  Searching verified male photos..."
-    )
-
-    male_obs = inat_observations(
+    male_obs = inat_search(
         scientific_name,
-        term_id=9,
-        term_value_id=11
+        sex="male"
     )
 
-    male = first_annotated_photo(
+    male = first_inat_photo(
         male_obs,
         "male"
     )
 
+    # If iNaturalist doesn't have one,
+    # try Wikimedia's male search.
     if male:
-        result["male"].append(male)
+
+        result["male"].append(
+            male
+        )
+
+    else:
+
+        male_commons = commons_get_photos(
+            scientific_name,
+            category="male",
+            limit=1
+        )
+
+        result["male"] = male_commons
 
     # --------------------------------------------------------
-    # 3. FEMALE
-    # Sex = group 9, Female = value 10
+    # FEMALE
     # --------------------------------------------------------
 
     print(
-        "  Searching verified female photos..."
+        "  Searching verified female..."
     )
 
-    female_obs = inat_observations(
+    female_obs = inat_search(
         scientific_name,
-        term_id=9,
-        term_value_id=10
+        sex="female"
     )
 
-    female = first_annotated_photo(
+    female = first_inat_photo(
         female_obs,
         "female"
     )
 
     if female:
+
         result["female"].append(
             female
         )
 
+    else:
+
+        female_commons = commons_get_photos(
+            scientific_name,
+            category="female",
+            limit=1
+        )
+
+        result["female"] = female_commons
+
     # --------------------------------------------------------
-    # 4. JUVENILE
-    # Life Stage = group 1,
-    # Juvenile = value 8
+    # JUVENILE
     # --------------------------------------------------------
 
     print(
-        "  Searching verified juvenile photos..."
+        "  Searching verified juvenile..."
     )
 
-    juvenile_obs = inat_observations(
+    juvenile_obs = inat_search(
         scientific_name,
-        term_id=1,
-        term_value_id=8
+        juvenile=True
     )
 
-    juvenile = first_annotated_photo(
+    juvenile = first_inat_photo(
         juvenile_obs,
         "juvenile"
     )
 
     if juvenile:
+
         result["juvenile"].append(
             juvenile
         )
+
+    else:
+
+        juvenile_commons = commons_get_photos(
+            scientific_name,
+            category="juvenile",
+            limit=1
+        )
+
+        result["juvenile"] = (
+            juvenile_commons
+        )
+
+    # --------------------------------------------------------
+    # THREE GENERAL PHOTOS
+    # --------------------------------------------------------
+
+    print(
+        "  Searching 3 additional photos..."
+    )
+
+    result["general"] = (
+        commons_get_photos(
+            scientific_name,
+            category="general",
+            limit=3
+        )
+    )
 
     return result
 
@@ -713,12 +761,13 @@ def main():
 
     existing = load_existing()
 
-    limit = TEST_LIMIT
+    if TEST_LIMIT is None:
 
-    if limit is None:
         selected = birds
+
     else:
-        selected = birds[:limit]
+
+        selected = birds[:TEST_LIMIT]
 
     print()
     print(
@@ -777,7 +826,7 @@ def main():
         if not scientific:
             continue
 
-        result = build_species_photos(
+        result = build_species(
             scientific
         )
 
@@ -800,16 +849,14 @@ def main():
         )
 
         print(
-            f"  ✓ General: "
+            f"  ✓ Additional: "
             f"{len(result['general'])}"
         )
 
-        # Save immediately.
         save_database(
             existing
         )
 
-        # Small pause between species.
         time.sleep(1)
 
     print()
@@ -817,30 +864,23 @@ def main():
         "=========================================="
     )
     print(
-        "TEST COMPLETE"
+        "PHOTO TEST COMPLETE"
     )
     print(
         "=========================================="
     )
 
-    print(
-        "The database has been saved."
-    )
-
     if TEST_LIMIT is not None:
+
+        print(
+            "Processed only the first "
+            f"{TEST_LIMIT} species."
+        )
 
         print()
         print(
-            "IMPORTANT:"
-        )
-
-        print(
-            "This was a 5-species test."
-        )
-
-        print(
-            "Check photos.json before "
-            "running all 1,851 species."
+            "If the male/female photos look "
+            "correct, change TEST_LIMIT to None."
         )
 
 
