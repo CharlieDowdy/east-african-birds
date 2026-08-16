@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "generated_by": "scripts/build_photos.py",
   "providers": [
     "Wikimedia Commons",
@@ -7,16 +7,46 @@
   ],
   "species": {
     "struthio-camelus": {
-      "male": [],
-      "female": [],
-      "juvenile": [],
+      "male": [
+        {
+          "id": "commons-3967254",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Male_Ostrich.jpg/1280px-Male_Ostrich.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "source": "https://commons.wikimedia.org/wiki/File%3AMale_Ostrich.jpg",
+          "provider": "Wikimedia Commons",
+          "license": "CC BY",
+          "artist": "Snake3yes",
+          "category": "male"
+        }
+      ],
+      "female": [
+        {
+          "id": "commons-3967310",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Female_Ostrich.jpg/1280px-Female_Ostrich.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "source": "https://commons.wikimedia.org/wiki/File%3AFemale_Ostrich.jpg",
+          "provider": "Wikimedia Commons",
+          "license": "CC BY",
+          "artist": "Snake3yes",
+          "category": "female"
+        }
+      ],
+      "juvenile": [
+        {
+          "id": "commons-764970",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Ostrich_and_chick.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "source": "https://commons.wikimedia.org/wiki/File%3AOstrich_and_chick.jpg",
+          "provider": "Wikimedia Commons",
+          "license": "Public Domain",
+          "artist": "Andrew_massyn",
+          "category": "juvenile"
+        }
+      ],
       "general": [
         {
           "id": "commons-8769226",
           "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Jan_Brueghel_de_Oude_en_Peter_Paul_Rubens_-_Het_aards_paradijs_met_de_zondeval_van_Adam_en_Eva.jpg/1280px-Jan_Brueghel_de_Oude_en_Peter_Paul_Rubens_-_Het_aards_paradijs_met_de_zondeval_van_Adam_en_Eva.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "source": "https://commons.wikimedia.org/wiki/File%3AJan_Brueghel_de_Oude_en_Peter_Paul_Rubens_-_Het_aards_paradijs_met_de_zondeval_van_Adam_en_Eva.jpg",
           "provider": "Wikimedia Commons",
-          "license": "Public domain",
+          "license": "Public Domain",
           "artist": "Peter Paul Rubens / Jan Brueghel the Elder",
           "category": "general"
         },
@@ -25,7 +55,7 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Struthio_camelus_portrait_Whipsnade_Zoo.jpg/1280px-Struthio_camelus_portrait_Whipsnade_Zoo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "source": "https://commons.wikimedia.org/wiki/File%3AStruthio_camelus_portrait_Whipsnade_Zoo.jpg",
           "provider": "Wikimedia Commons",
-          "license": "CC BY 2.0",
+          "license": "CC BY",
           "artist": "William Warby",
           "category": "general"
         },
@@ -34,60 +64,35 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/0/03/North_African_Ostrich_-_Masai_Ostrich_-_female_non-breeding_%28Struthio_camelus%29_-_Flickr_-_Lip_Kee_%281%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
           "source": "https://commons.wikimedia.org/wiki/File%3ANorth_African_Ostrich_-_Masai_Ostrich_-_female_non-breeding_%28Struthio_camelus%29_-_Flickr_-_Lip_Kee_%281%29.jpg",
           "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 2.0",
+          "license": "CC BY-SA",
           "artist": "Lip Kee from Singapore, Republic of Singapore",
-          "category": "general"
-        },
-        {
-          "id": "commons-23288870",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/8/87/North_African_Ostrich_-_Masai_Ostrich_%28Struthio_camelus_massaicus%29_-_Flickr_-_Lip_Kee.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
-          "source": "https://commons.wikimedia.org/wiki/File%3ANorth_African_Ostrich_-_Masai_Ostrich_%28Struthio_camelus_massaicus%29_-_Flickr_-_Lip_Kee.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 2.0",
-          "artist": "Lip Kee from Singapore, Republic of Singapore",
-          "category": "general"
-        },
-        {
-          "id": "commons-50348028",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Avestruz_alta.jpg/1280px-Avestruz_alta.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AAvestruz_alta.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 4.0",
-          "artist": "Museum of Veterinary Anatomy FMVZ USP",
-          "category": "general"
-        },
-        {
-          "id": "commons-66085702",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Struthio_camelus_MHNT.ZOO.2010.11.1.1.jpg/1280px-Struthio_camelus_MHNT.ZOO.2010.11.1.1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AStruthio_camelus_MHNT.ZOO.2010.11.1.1.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 4.0",
-          "artist": "Roger Culos",
-          "category": "general"
-        },
-        {
-          "id": "commons-75700465",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/200812_kenya-22_%283213880564%29.jpg/1280px-200812_kenya-22_%283213880564%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3A200812_kenya-22_%283213880564%29.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY 2.0",
-          "artist": "Franco Pecchio from Milano, Italy",
-          "category": "general"
-        },
-        {
-          "id": "commons-81550480",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Young_Common_Ostrich_2019-07-24.jpg/1280px-Young_Common_Ostrich_2019-07-24.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AYoung_Common_Ostrich_2019-07-24.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 4.0",
-          "artist": "Axel Tschentscher",
           "category": "general"
         }
       ]
     },
     "struthio-molybdophanes": {
-      "male": [],
-      "female": [],
+      "male": [
+        {
+          "id": "commons-13352109",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Autruche_male.jpg/1280px-Autruche_male.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "source": "https://commons.wikimedia.org/wiki/File%3AAutruche_male.jpg",
+          "provider": "Wikimedia Commons",
+          "license": "CC BY",
+          "artist": "Christophe Eyquem",
+          "category": "male"
+        }
+      ],
+      "female": [
+        {
+          "id": "commons-30544396",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Struthio_molybdophanes%2C_female%2C_Samburu_National_Reserve%2C_Kenya.jpg/1280px-Struthio_molybdophanes%2C_female%2C_Samburu_National_Reserve%2C_Kenya.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "source": "https://commons.wikimedia.org/wiki/File%3AStruthio_molybdophanes%2C_female%2C_Samburu_National_Reserve%2C_Kenya.jpg",
+          "provider": "Wikimedia Commons",
+          "license": "CC BY",
+          "artist": "ninara",
+          "category": "female"
+        }
+      ],
       "juvenile": [],
       "general": [
         {
@@ -95,7 +100,7 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Somali_ostrich.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
           "source": "https://commons.wikimedia.org/wiki/File%3ASomali_ostrich.jpg",
           "provider": "Wikimedia Commons",
-          "license": "Public domain",
+          "license": "Public Domain",
           "artist": "Christiaan Kooyman",
           "category": "general"
         },
@@ -104,7 +109,7 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Autruchon_Eyquem.jpg/1280px-Autruchon_Eyquem.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "source": "https://commons.wikimedia.org/wiki/File%3AAutruchon_Eyquem.jpg",
           "provider": "Wikimedia Commons",
-          "license": "CC BY 3.0",
+          "license": "CC BY",
           "artist": "Christophe Eyquem",
           "category": "general"
         },
@@ -113,60 +118,35 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Autruche_male.jpg/1280px-Autruche_male.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "source": "https://commons.wikimedia.org/wiki/File%3AAutruche_male.jpg",
           "provider": "Wikimedia Commons",
-          "license": "CC BY 3.0",
+          "license": "CC BY",
           "artist": "Christophe Eyquem",
-          "category": "general"
-        },
-        {
-          "id": "commons-25046457",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/5/54/Struthio_molybdophanes_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
-          "source": "https://commons.wikimedia.org/wiki/File%3AStruthio_molybdophanes_1.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 2.0",
-          "artist": "David Bygott",
-          "category": "general"
-        },
-        {
-          "id": "commons-30544393",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Struthio_molybdophanes%2C_male%2C_Samburu_National_Reserve%2C_Kenya.jpg/1280px-Struthio_molybdophanes%2C_male%2C_Samburu_National_Reserve%2C_Kenya.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AStruthio_molybdophanes%2C_male%2C_Samburu_National_Reserve%2C_Kenya.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY 2.0",
-          "artist": "ninara",
-          "category": "general"
-        },
-        {
-          "id": "commons-30544396",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Struthio_molybdophanes%2C_female%2C_Samburu_National_Reserve%2C_Kenya.jpg/1280px-Struthio_molybdophanes%2C_female%2C_Samburu_National_Reserve%2C_Kenya.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AStruthio_molybdophanes%2C_female%2C_Samburu_National_Reserve%2C_Kenya.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY 2.0",
-          "artist": "ninara",
-          "category": "general"
-        },
-        {
-          "id": "commons-30544513",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Struthio_molybdophanes%2C_family%2C_Samburu_National_Reserve%2C_Kenya.jpg/1280px-Struthio_molybdophanes%2C_family%2C_Samburu_National_Reserve%2C_Kenya.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AStruthio_molybdophanes%2C_family%2C_Samburu_National_Reserve%2C_Kenya.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY 2.0",
-          "artist": "ninara",
-          "category": "general"
-        },
-        {
-          "id": "commons-66715209",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Struthio_molybdophanes_%28skeleton%29_at_G%C3%B6teborgs_Naturhistoriska_Museum_2640.jpg/1280px-Struthio_molybdophanes_%28skeleton%29_at_G%C3%B6teborgs_Naturhistoriska_Museum_2640.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AStruthio_molybdophanes_%28skeleton%29_at_G%C3%B6teborgs_Naturhistoriska_Museum_2640.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 4.0",
-          "artist": "Gunnar Creutz",
           "category": "general"
         }
       ]
     },
     "dendrocygna-viduata": {
-      "male": [],
-      "female": [],
+      "male": [
+        {
+          "id": "commons-15456512",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/67/Anas_platyrhynchos_W114.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "source": "https://commons.wikimedia.org/wiki/File%3AAnas_platyrhynchos_W114.jpg",
+          "provider": "Wikimedia Commons",
+          "license": "CC BY-SA",
+          "artist": "Emőke Dénes",
+          "category": "male"
+        }
+      ],
+      "female": [
+        {
+          "id": "commons-12775948",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Dendrocygna_viduata_female_1.jpg/1280px-Dendrocygna_viduata_female_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "source": "https://commons.wikimedia.org/wiki/File%3ADendrocygna_viduata_female_1.jpg",
+          "provider": "Wikimedia Commons",
+          "license": "CC BY",
+          "artist": "Tony Hisgett from Birmingham, UK",
+          "category": "female"
+        }
+      ],
       "juvenile": [],
       "general": [
         {
@@ -174,7 +154,7 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Dendrocygna_viduata_in_Zurich_Zoo.jpeg/1280px-Dendrocygna_viduata_in_Zurich_Zoo.jpeg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "source": "https://commons.wikimedia.org/wiki/File%3ADendrocygna_viduata_in_Zurich_Zoo.jpeg",
           "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 3.0",
+          "license": "CC BY-SA",
           "artist": "Guérin Nicolas",
           "category": "general"
         },
@@ -183,7 +163,7 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Dendrocygna_viduata_001.jpg/1280px-Dendrocygna_viduata_001.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "source": "https://commons.wikimedia.org/wiki/File%3ADendrocygna_viduata_001.jpg",
           "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 4.0",
+          "license": "CC BY-SA",
           "artist": "Josue Hermoza",
           "category": "general"
         },
@@ -192,68 +172,43 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Dendrocygna_viduata_2.jpg/1280px-Dendrocygna_viduata_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "source": "https://commons.wikimedia.org/wiki/File%3ADendrocygna_viduata_2.jpg",
           "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 4.0",
+          "license": "CC BY-SA",
           "artist": "Josue Hermoza",
-          "category": "general"
-        },
-        {
-          "id": "commons-42773735",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/A_natural_history_of_the_ducks_%28Plate_11%29_%288230112548%29.jpg/1280px-A_natural_history_of_the_ducks_%28Plate_11%29_%288230112548%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AA_natural_history_of_the_ducks_%28Plate_11%29_%288230112548%29.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "Public domain",
-          "artist": "Benson, Frank Weston; Brooks, Allan; Fuertes, Louis Agassiz; Grönvold, Henrik; Phillips, John C.",
-          "category": "general"
-        },
-        {
-          "id": "commons-44204279",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/White-faced_whistling_ducks_%28Dendrocygna_viduata%29_in_flight.JPG/1280px-White-faced_whistling_ducks_%28Dendrocygna_viduata%29_in_flight.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AWhite-faced_whistling_ducks_%28Dendrocygna_viduata%29_in_flight.JPG",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 4.0",
-          "artist": "Charles J. Sharp",
-          "category": "general"
-        },
-        {
-          "id": "commons-53675171",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/White-faced_Duck_%28Dendrocygna_viduata%29_%2831189687175%29.jpg/1280px-White-faced_Duck_%28Dendrocygna_viduata%29_%2831189687175%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AWhite-faced_Duck_%28Dendrocygna_viduata%29_%2831189687175%29.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 2.0",
-          "artist": "Bernard DUPONT from FRANCE",
-          "category": "general"
-        },
-        {
-          "id": "commons-65859533",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/White-faced_whistling_ducks%2C_Zimbabwe.jpg/1280px-White-faced_whistling_ducks%2C_Zimbabwe.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AWhite-faced_whistling_ducks%2C_Zimbabwe.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 4.0",
-          "artist": "Bernard Gagnon",
-          "category": "general"
-        },
-        {
-          "id": "commons-65891800",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/White-faced_whistling_ducks_in_flight%2C_Zimbabwe.jpg/1280px-White-faced_whistling_ducks_in_flight%2C_Zimbabwe.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AWhite-faced_whistling_ducks_in_flight%2C_Zimbabwe.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 4.0",
-          "artist": "Bernard Gagnon",
           "category": "general"
         }
       ]
     },
     "dendrocygna-bicolor": {
       "male": [],
-      "female": [],
-      "juvenile": [],
+      "female": [
+        {
+          "id": "commons-10778394",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Condor13%285%29.djvu/page1-1280px-Condor13%285%29.djvu.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "source": "https://commons.wikimedia.org/wiki/File%3ACondor13%285%29.djvu",
+          "provider": "Wikimedia Commons",
+          "license": "Public Domain",
+          "artist": "Cooper Ornithological Club",
+          "category": "female"
+        }
+      ],
+      "juvenile": [
+        {
+          "id": "commons-18577375",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/DendrocygnaChicks.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "source": "https://commons.wikimedia.org/wiki/File%3ADendrocygnaChicks.jpg",
+          "provider": "Wikimedia Commons",
+          "license": "Public Domain",
+          "artist": "Allan Cyril Brooks (February 15, 1869 – January 3, 1946)",
+          "category": "juvenile"
+        }
+      ],
       "general": [
         {
           "id": "commons-2487650",
           "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Dendrocygna_bicolor_wilhelma.jpg/1280px-Dendrocygna_bicolor_wilhelma.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "source": "https://commons.wikimedia.org/wiki/File%3ADendrocygna_bicolor_wilhelma.jpg",
           "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 2.5",
+          "license": "CC BY-SA",
           "artist": "Branko Kannenberg",
           "category": "general"
         },
@@ -262,7 +217,7 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/DendrocygnaFuertes.jpg/1280px-DendrocygnaFuertes.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "source": "https://commons.wikimedia.org/wiki/File%3ADendrocygnaFuertes.jpg",
           "provider": "Wikimedia Commons",
-          "license": "Public domain",
+          "license": "Public Domain",
           "artist": "Louis Agassiz Fuertes",
           "category": "general"
         },
@@ -271,60 +226,25 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Marrecas-caneleiras_-_Dendrocygna_bicolor.jpg/1280px-Marrecas-caneleiras_-_Dendrocygna_bicolor.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "source": "https://commons.wikimedia.org/wiki/File%3AMarrecas-caneleiras_-_Dendrocygna_bicolor.jpg",
           "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 3.0",
+          "license": "CC BY-SA",
           "artist": "Germano Roberto Schüür",
-          "category": "general"
-        },
-        {
-          "id": "commons-42651996",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Faune_de_la_S%C3%A9n%C3%A9gambie_%2814487485343%29.jpg/1280px-Faune_de_la_S%C3%A9n%C3%A9gambie_%2814487485343%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AFaune_de_la_S%C3%A9n%C3%A9gambie_%2814487485343%29.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "Public domain",
-          "artist": "Tremeau de Rochebrune, Alphonse",
-          "category": "general"
-        },
-        {
-          "id": "commons-42773714",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/A_natural_history_of_the_ducks_%28Plate_13%29_%288229047325%29.jpg/1280px-A_natural_history_of_the_ducks_%28Plate_13%29_%288229047325%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AA_natural_history_of_the_ducks_%28Plate_13%29_%288229047325%29.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "Public domain",
-          "artist": "Benson, Frank Weston; Brooks, Allan; Fuertes, Louis Agassiz; Grönvold, Henrik; Phillips, John C.",
-          "category": "general"
-        },
-        {
-          "id": "commons-42773725",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/A_natural_history_of_the_ducks_%28Plate_12%29_%288230112788%29.jpg/1280px-A_natural_history_of_the_ducks_%28Plate_12%29_%288230112788%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AA_natural_history_of_the_ducks_%28Plate_12%29_%288230112788%29.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "Public domain",
-          "artist": "Benson, Frank Weston; Brooks, Allan; Fuertes, Louis Agassiz; Grönvold, Henrik; Phillips, John C.",
-          "category": "general"
-        },
-        {
-          "id": "commons-44608407",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Faune_de_la_S%C3%A9n%C3%A9gambie_%28Planche_XXVII%29_BHL34755853.jpg/1280px-Faune_de_la_S%C3%A9n%C3%A9gambie_%28Planche_XXVII%29_BHL34755853.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AFaune_de_la_S%C3%A9n%C3%A9gambie_%28Planche_XXVII%29_BHL34755853.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "Public domain",
-          "artist": "Tremeau de Rochebrune, Alphonse",
-          "category": "general"
-        },
-        {
-          "id": "commons-74701155",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Dendrocygna_bicolor_MHNT.ZOO.2010.11.34.6.jpg/1280px-Dendrocygna_bicolor_MHNT.ZOO.2010.11.34.6.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3ADendrocygna_bicolor_MHNT.ZOO.2010.11.34.6.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 4.0",
-          "artist": "Roger Culos",
           "category": "general"
         }
       ]
     },
     "thalassornis-leuconotus": {
       "male": [],
-      "female": [],
+      "female": [
+        {
+          "id": "commons-77095992",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Zoo_Wuppertal_2007-04-30_%28000739%29.jpg/1280px-Zoo_Wuppertal_2007-04-30_%28000739%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "source": "https://commons.wikimedia.org/wiki/File%3AZoo_Wuppertal_2007-04-30_%28000739%29.jpg",
+          "provider": "Wikimedia Commons",
+          "license": "CC BY-SA",
+          "artist": "Rolf Mustermann 2007",
+          "category": "female"
+        }
+      ],
       "juvenile": [],
       "general": [
         {
@@ -332,7 +252,7 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/1/16/Thalassornis_leuconotus.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
           "source": "https://commons.wikimedia.org/wiki/File%3AThalassornis_leuconotus.jpg",
           "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 3.0",
+          "license": "CC BY-SA",
           "artist": "Dysmorodrepanis",
           "category": "general"
         },
@@ -341,7 +261,7 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Wei%C3%9Fr%C3%BCckenente_Thalassornis_050501.jpg/1280px-Wei%C3%9Fr%C3%BCckenente_Thalassornis_050501.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "source": "https://commons.wikimedia.org/wiki/File%3AWei%C3%9Fr%C3%BCckenente_Thalassornis_050501.jpg",
           "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 3.0",
+          "license": "CC BY-SA",
           "artist": "BS Thurner Hof",
           "category": "general"
         },
@@ -350,53 +270,8 @@
           "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Wei%C3%9Fr%C3%BCckenente_Thalassornis_Fl%C3%BCgel_ausgebreitet_050501.jpg/1280px-Wei%C3%9Fr%C3%BCckenente_Thalassornis_Fl%C3%BCgel_ausgebreitet_050501.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "source": "https://commons.wikimedia.org/wiki/File%3AWei%C3%9Fr%C3%BCckenente_Thalassornis_Fl%C3%BCgel_ausgebreitet_050501.jpg",
           "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 3.0",
+          "license": "CC BY-SA",
           "artist": "BS Thurner Hof",
-          "category": "general"
-        },
-        {
-          "id": "commons-15119315",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/White-backed_Duck_RWD1.jpg/1280px-White-backed_Duck_RWD1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AWhite-backed_Duck_RWD1.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 3.0",
-          "artist": "DickDaniels (http://carolinabirds.org/)",
-          "category": "general"
-        },
-        {
-          "id": "commons-15119332",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/White-backed_Duck_RWD2.jpg/1280px-White-backed_Duck_RWD2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AWhite-backed_Duck_RWD2.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 3.0",
-          "artist": "DickDaniels (http://theworldbirds.org/)",
-          "category": "general"
-        },
-        {
-          "id": "commons-15119340",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/White-backed_Duck_RWD3.jpg/1280px-White-backed_Duck_RWD3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AWhite-backed_Duck_RWD3.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "CC BY-SA 3.0",
-          "artist": "DickDaniels (http://carolinabirds.org/)",
-          "category": "general"
-        },
-        {
-          "id": "commons-17634654",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Whitebackedduck.JPG/1280px-Whitebackedduck.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AWhitebackedduck.JPG",
-          "provider": "Wikimedia Commons",
-          "license": "Public domain",
-          "artist": "Mitternacht90 at English Wikipedia",
-          "category": "general"
-        },
-        {
-          "id": "commons-21293658",
-          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/ThalassornisLeuconotaDavies.jpg/1280px-ThalassornisLeuconotaDavies.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-          "source": "https://commons.wikimedia.org/wiki/File%3AThalassornisLeuconotaDavies.jpg",
-          "provider": "Wikimedia Commons",
-          "license": "Public domain",
-          "artist": "C. G. Finch-Davies",
           "category": "general"
         }
       ]
