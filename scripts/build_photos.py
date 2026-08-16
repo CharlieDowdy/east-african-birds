@@ -1,7 +1,7 @@
 import json
 import time
-import random
 from pathlib import Path
+from urllib.parse import quote
 
 import requests
 
@@ -11,29 +11,20 @@ ROOT = Path(__file__).resolve().parents[1]
 SPECIES_FILE = ROOT / "data" / "species.json"
 PHOTOS_FILE = ROOT / "data" / "photos.json"
 
-API = "https://api.inaturalist.org/v2/observations"
+API = "https://commons.wikimedia.org/w/api.php"
 
-OPEN_LICENSES = {
-    "cc0",
-    "cc-by",
-    "cc-by-sa",
-}
+USER_AGENT = (
+    "EastAfricanBirds/1.0 "
+    "https://github.com/CharlieDowdy/east-african-birds"
+)
 
-MAX_PHOTOS = 5
-
-# Keep requests slow enough to avoid hammering iNaturalist.
-REQUEST_DELAY = 1.2
-
-MAX_RETRIES = 6
-
+MAX_PHOTOS = 2
+REQUEST_DELAY = 0.5
 
 session = requests.Session()
 
 session.headers.update({
-    "User-Agent": (
-        "EastAfricanBirds/1.0 "
-        "https://github.com/CharlieDowdy/east-african-birds"
-    ),
+    "User-Agent": USER_AGENT,
     "Accept": "application/json",
 })
 
@@ -62,21 +53,9 @@ def load_existing():
             )
         )
 
-        # Support both:
-        #
-        # {
-        #   "species": {...}
-        # }
-        #
-        # and the older:
-        #
-        # {
-        #   "bird-id": [...]
-        # }
-
         if (
             isinstance(data, dict)
-            and isinstance(data.get("species"), dict)
+            and "species" in data
         ):
             return data["species"]
 
@@ -87,11 +66,20 @@ def load_existing():
         return {}
 
 
-def save_database(database):
+def save_photos(data):
+
+    payload = {
+        "version": 4,
+        "generated_by": (
+            "scripts/build_photos.py"
+        ),
+        "provider": "Wikimedia Commons",
+        "species": data,
+    }
 
     PHOTOS_FILE.write_text(
         json.dumps(
-            database,
+            payload,
             ensure_ascii=False,
             indent=2,
         ),
@@ -99,157 +87,171 @@ def save_database(database):
     )
 
 
-def request_photos(scientific_name):
+def search_commons(scientific):
 
     params = {
-        "taxon_name": scientific_name,
-        "iconic_taxa": "Aves",
-        "quality_grade": "research",
-        "per_page": 30,
-        "order_by": "votes",
-        "order": "desc",
-        "photo_license": "cc0,cc-by,cc-by-sa",
-        "photos": "true",
+        "action": "query",
+        "format": "json",
+        "formatversion": "2",
+        "generator": "search",
+        "gsrsearch": (
+            f'"{scientific}" filetype:bitmap'
+        ),
+        "gsrnamespace": "6",
+        "gsrlimit": "10",
+        "prop": "imageinfo",
+        "iiprop": (
+            "url|size|mime|extmetadata"
+        ),
+        "iiurlwidth": "1000",
     }
 
-    for attempt in range(MAX_RETRIES):
+    try:
 
-        try:
+        response = session.get(
+            API,
+            params=params,
+            timeout=45,
+        )
 
-            response = session.get(
-                API,
-                params=params,
-                timeout=45,
-            )
+        response.raise_for_status()
 
-            if response.status_code == 429:
+        return response.json()
 
-                wait = min(
-                    60,
-                    (2 ** attempt) +
-                    random.uniform(0.5, 2.0)
-                )
+    except requests.RequestException as error:
 
-                print(
-                    f"  Rate limited. "
-                    f"Waiting {wait:.1f}s..."
-                )
+        print(
+            f"  Commons request failed: {error}"
+        )
 
-                time.sleep(wait)
-
-                continue
-
-            response.raise_for_status()
-
-            return response.json()
-
-        except requests.RequestException as error:
-
-            if attempt == MAX_RETRIES - 1:
-
-                print(
-                    f"  Request failed: {error}"
-                )
-
-                return None
-
-            wait = min(
-                60,
-                (2 ** attempt) +
-                random.uniform(0.5, 2.0)
-            )
-
-            print(
-                f"  Request error. "
-                f"Retrying in {wait:.1f}s..."
-            )
-
-            time.sleep(wait)
-
-    return None
+        return None
 
 
-def extract_photos(data):
+def get_metadata(info, key):
+
+    metadata = info.get(
+        "extmetadata",
+        {}
+    )
+
+    item = metadata.get(key)
+
+    if not item:
+        return ""
+
+    return (
+        item.get("value")
+        or ""
+    )
+
+
+def extract_photos(data, scientific):
+
+    if not data:
+        return []
+
+    pages = data.get(
+        "query",
+        {}
+    ).get(
+        "pages",
+        []
+    )
 
     photos = []
 
     seen = set()
 
-    for observation in (
-        data.get("results", [])
-    ):
+    for page in pages:
 
-        for photo in (
-            observation.get("photos", [])
-        ):
+        info_list = page.get(
+            "imageinfo",
+            []
+        )
 
-            license_code = (
-                photo.get("license_code")
-                or ""
-            ).lower()
+        if not info_list:
+            continue
 
-            if license_code not in OPEN_LICENSES:
-                continue
+        info = info_list[0]
 
-            photo_id = photo.get("id")
+        mime = (
+            info.get("mime")
+            or ""
+        ).lower()
 
-            if not photo_id:
-                continue
+        if not mime.startswith("image/"):
+            continue
 
-            if photo_id in seen:
-                continue
+        url = (
+            info.get("thumburl")
+            or info.get("url")
+        )
 
-            url = (
-                photo.get("url")
-                or photo.get("original_url")
-            )
+        if not url:
+            continue
 
-            if not url:
-                continue
+        title = page.get(
+            "title",
+            ""
+        )
 
-            # Use the larger iNaturalist version.
-            if "/medium." in url:
+        if title in seen:
+            continue
 
-                url = url.replace(
-                    "/medium.",
-                    "/large."
+        license_name = get_metadata(
+            info,
+            "LicenseShortName"
+        )
+
+        usage_terms = get_metadata(
+            info,
+            "UsageTerms"
+        )
+
+        artist = get_metadata(
+            info,
+            "Artist"
+        )
+
+        description = get_metadata(
+            info,
+            "ImageDescription"
+        )
+
+        file_page = (
+            "https://commons.wikimedia.org/wiki/"
+            + quote(
+                title.replace(
+                    " ",
+                    "_"
                 )
+            )
+        )
 
-            photos.append({
-                "id": photo_id,
-                "url": url,
-                "license": license_code,
-                "attribution": (
-                    photo.get("attribution")
-                    or "Photographer not supplied"
-                ),
-                "observation_id": (
-                    observation.get("id")
-                ),
-            })
+        photos.append({
+            "title": title,
+            "url": url,
+            "source": file_page,
+            "provider": "Wikimedia Commons",
+            "license": (
+                license_name
+                or usage_terms
+                or "See source"
+            ),
+            "artist": (
+                artist
+                or "Unknown"
+            ),
+            "description": description,
+            "scientific_name": scientific,
+        })
 
-            seen.add(photo_id)
+        seen.add(title)
 
-            if len(photos) >= MAX_PHOTOS:
-
-                return photos
+        if len(photos) >= MAX_PHOTOS:
+            break
 
     return photos
-
-
-def get_photos(scientific_name):
-
-    if not scientific_name:
-        return []
-
-    data = request_photos(
-        scientific_name
-    )
-
-    if not data:
-        return []
-
-    return extract_photos(data)
 
 
 def main():
@@ -260,16 +262,16 @@ def main():
 
     total = len(birds)
 
+    with_two = 0
+    with_one = 0
+    with_zero = 0
+
     print()
     print(
         f"Building photo database for "
         f"{total} species..."
     )
     print()
-
-    species_with_photos = 0
-
-    total_photos = 0
 
     for number, bird in enumerate(
         birds,
@@ -283,42 +285,31 @@ def main():
             "Unknown"
         )
 
-        scientific = bird.get(
-            "scientific"
-        )
+        scientific = (
+            bird.get("scientific")
+            or ""
+        ).strip()
 
         if not bird_id:
             continue
 
-        # IMPORTANT:
-        #
-        # Only skip a species if it ALREADY
-        # has photos.
-        #
-        # Empty [] entries from the previous
-        # broken run MUST be retried.
-
-        old_photos = existing.get(
+        old = existing.get(
             bird_id
         )
 
+        # Only skip if we already have
+        # the required 2 photos.
         if (
-            isinstance(old_photos, list)
-            and len(old_photos) > 0
+            isinstance(old, list)
+            and len(old) >= MAX_PHOTOS
         ):
 
             print(
                 f"[{number}/{total}] "
-                f"{name} — already has "
-                f"{len(old_photos)} photos"
+                f"{name} — already has 2 photos"
             )
 
-            species_with_photos += 1
-
-            total_photos += len(
-                old_photos
-            )
-
+            with_two += 1
             continue
 
         print(
@@ -327,50 +318,73 @@ def main():
         )
 
         print(
-            f"  Scientific: "
-            f"{scientific}"
+            f"  Scientific: {scientific}"
         )
 
-        photos = get_photos(
+        result = search_commons(
+            scientific
+        )
+
+        photos = extract_photos(
+            result,
             scientific
         )
 
         existing[bird_id] = photos
 
-        if photos:
+        if len(photos) >= 2:
 
             print(
-                f"  ✓ Found "
-                f"{len(photos)} photos"
+                "  ✓ Found 2 photos"
             )
 
-            species_with_photos += 1
+            with_two += 1
 
-            total_photos += len(
-                photos
+        elif len(photos) == 1:
+
+            print(
+                "  ⚠ Found 1 photo"
             )
+
+            with_one += 1
 
         else:
 
             print(
-                "  – No suitable "
-                "licensed photos found"
+                "  ✗ No suitable photos found"
             )
 
-        # Save after every species.
-        #
-        # This means the workflow can safely
-        # continue if it stops.
+            with_zero += 1
 
-        save_database(existing)
-
-        # Respect API rate limits.
+        # Save continuously.
+        save_photos(existing)
 
         time.sleep(
             REQUEST_DELAY
         )
 
-    save_database(existing)
+        if number % 25 == 0:
+
+            print()
+            print(
+                "Progress:"
+            )
+
+            print(
+                f"  2+ photos: {with_two}"
+            )
+
+            print(
+                f"  1 photo:   {with_one}"
+            )
+
+            print(
+                f"  0 photos:  {with_zero}"
+            )
+
+            print()
+
+    save_photos(existing)
 
     print()
     print(
@@ -384,27 +398,23 @@ def main():
     )
 
     print(
-        f"Species processed: {total}"
+        f"Species:       {total}"
     )
 
     print(
-        f"Species with photos: "
-        f"{species_with_photos}"
+        f"2+ photos:     {with_two}"
     )
 
     print(
-        f"Total photos: "
-        f"{total_photos}"
+        f"1 photo:       {with_one}"
     )
 
     print(
-        f"Species without photos: "
-        f"{total - species_with_photos}"
+        f"0 photos:      {with_zero}"
     )
 
     print()
 
 
 if __name__ == "__main__":
-
     main()
