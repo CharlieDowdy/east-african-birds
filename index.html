@@ -18,8 +18,8 @@ body{
 
 header{
   background:#123b2a;
-  color:#fff;
-  padding:28px 18px 24px;
+  color:white;
+  padding:28px 18px 25px;
   border-radius:0 0 30px 30px;
 }
 
@@ -29,8 +29,23 @@ header h1{
 }
 
 header p{
-  margin:6px 0 0;
-  opacity:.85;
+  margin:7px 0 0;
+  opacity:.86;
+}
+
+.scope{
+  margin-top:15px;
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.scope span{
+  background:#ffffff18;
+  border:1px solid #ffffff25;
+  border-radius:99px;
+  padding:6px 10px;
+  font-size:12px;
 }
 
 main{
@@ -65,7 +80,7 @@ main{
 
 .chip{
   border:1px solid #d5ddd5;
-  background:#fff;
+  background:white;
   border-radius:99px;
   padding:9px 14px;
   white-space:nowrap;
@@ -75,30 +90,7 @@ main{
 
 .chip.on{
   background:#123b2a;
-  color:#fff;
-  border-color:#123b2a;
-}
-
-.countryBar{
-  display:flex;
-  gap:8px;
-  overflow:auto;
-  padding:8px 0 14px;
-}
-
-.countryChip{
-  border:1px solid #d5ddd5;
-  background:#fff;
-  border-radius:99px;
-  padding:10px 14px;
-  white-space:nowrap;
-  cursor:pointer;
-  font-size:14px;
-}
-
-.countryChip.on{
-  background:#123b2a;
-  color:#fff;
+  color:white;
   border-color:#123b2a;
 }
 
@@ -109,7 +101,7 @@ main{
 }
 
 .stat{
-  background:#fff;
+  background:white;
   border-radius:15px;
   padding:13px;
   flex:1;
@@ -128,7 +120,7 @@ main{
 }
 
 .card{
-  background:#fff;
+  background:white;
   border-radius:20px;
   padding:14px;
   box-shadow:0 4px 16px #0001;
@@ -136,7 +128,7 @@ main{
 }
 
 .thumb{
-  height:175px;
+  height:190px;
   border-radius:15px;
   overflow:hidden;
   background:#dfe9df;
@@ -178,12 +170,25 @@ main{
   background:#f5e0dc;
 }
 
+.countryTags{
+  margin-top:5px;
+}
+
+.countryTag{
+  display:inline-block;
+  font-size:11px;
+  margin:5px 3px 0 0;
+  padding:5px 8px;
+  border-radius:8px;
+  background:#e5efe8;
+}
+
 .btn{
   border:0;
   border-radius:11px;
   padding:10px 14px;
   background:#123b2a;
-  color:#fff;
+  color:white;
   font-weight:600;
   margin-top:11px;
   cursor:pointer;
@@ -204,7 +209,7 @@ main{
 }
 
 .sheet{
-  background:#fff;
+  background:white;
   width:100%;
   max-width:900px;
   margin:auto;
@@ -222,10 +227,6 @@ main{
   height:36px;
   font-size:22px;
   cursor:pointer;
-}
-
-.detailHero{
-  margin-top:8px;
 }
 
 .detailHero h1{
@@ -300,23 +301,17 @@ main{
 }
 
 .lifeCard{
-  background:#fff;
+  background:white;
   padding:15px;
   border-radius:17px;
   margin-bottom:10px;
   box-shadow:0 3px 12px #0001;
 }
 
-.empty{
-  text-align:center;
-  padding:50px 20px;
-  color:#68736b;
-}
-
 .tabs{
   position:sticky;
   bottom:9px;
-  background:#fff;
+  background:white;
   border-radius:18px;
   padding:7px;
   display:flex;
@@ -332,6 +327,12 @@ main{
   font-weight:600;
   color:#123b2a;
   cursor:pointer;
+}
+
+.empty{
+  text-align:center;
+  padding:50px 20px;
+  color:#68736b;
 }
 
 @media(max-width:600px){
@@ -364,9 +365,22 @@ main{
 <body>
 
 <header>
+
   <h1>🦜 East African Birds</h1>
-  <p>Explore • Learn • Record</p>
+
+  <p>
+    A field guide to the birds of Kenya, Tanzania, Uganda & Ethiopia
+  </p>
+
+  <div class="scope">
+    <span>🇰🇪 Kenya</span>
+    <span>🇹🇿 Tanzania</span>
+    <span>🇺🇬 Uganda</span>
+    <span>🇪🇹 Ethiopia</span>
+  </div>
+
 </header>
+
 
 <main>
 
@@ -375,17 +389,24 @@ main{
   <input
     id="q"
     class="search"
-    placeholder="Search bird, scientific name, family..."
+    placeholder="Search bird, scientific name or family..."
     autocomplete="off"
   >
 
-  <!-- COUNTRY FILTER -->
-  <div class="filterTitle">🌍 Country</div>
-  <div id="countryBar" class="countryBar"></div>
 
-  <!-- FAMILY FILTER -->
-  <div class="filterTitle">🐦 Family</div>
+  <div class="filterTitle">
+    🌍 Country
+  </div>
+
+  <div id="countryBar" class="bar"></div>
+
+
+  <div class="filterTitle">
+    🐦 Family
+  </div>
+
   <div id="familyBar" class="bar"></div>
+
 
   <div class="stats">
 
@@ -395,8 +416,8 @@ main{
     </div>
 
     <div class="stat">
-      <b>1,851</b>
-      Avibase listed
+      <b id="visible">0</b>
+      shown
     </div>
 
     <div class="stat">
@@ -405,6 +426,7 @@ main{
     </div>
 
   </div>
+
 
   <div id="grid" class="grid"></div>
 
@@ -465,18 +487,37 @@ let details = {};
 let family = "All";
 let country = "All";
 
-const q = document.getElementById("q");
-const familyBar = document.getElementById("familyBar");
-const countryBar = document.getElementById("countryBar");
-const grid = document.getElementById("grid");
-const loaded = document.getElementById("loaded");
-const photoCount = document.getElementById("photoCount");
-const modal = document.getElementById("modal");
-const detail = document.getElementById("detail");
+
+const q =
+  document.getElementById("q");
+
+const familyBar =
+  document.getElementById("familyBar");
+
+const countryBar =
+  document.getElementById("countryBar");
+
+const grid =
+  document.getElementById("grid");
+
+const loaded =
+  document.getElementById("loaded");
+
+const visible =
+  document.getElementById("visible");
+
+const photoCount =
+  document.getElementById("photoCount");
+
+const modal =
+  document.getElementById("modal");
+
+const detail =
+  document.getElementById("detail");
 
 
 // ============================================================
-// COUNTRY LIST
+// ONLY THESE FOUR COUNTRIES
 // ============================================================
 
 const countries = [
@@ -497,58 +538,8 @@ const countries = [
   },
 
   {
-    code:"RW",
-    name:"🇷🇼 Rwanda"
-  },
-
-  {
-    code:"BI",
-    name:"🇧🇮 Burundi"
-  },
-
-  {
-    code:"SS",
-    name:"🇸🇸 South Sudan"
-  },
-
-  {
     code:"ET",
     name:"🇪🇹 Ethiopia"
-  },
-
-  {
-    code:"SO",
-    name:"🇸🇴 Somalia"
-  },
-
-  {
-    code:"DJ",
-    name:"🇩🇯 Djibouti"
-  },
-
-  {
-    code:"ER",
-    name:"🇪🇷 Eritrea"
-  },
-
-  {
-    code:"SD",
-    name:"🇸🇩 Sudan"
-  },
-
-  {
-    code:"ZM",
-    name:"🇿🇲 Zambia"
-  },
-
-  {
-    code:"MZ",
-    name:"🇲🇿 Mozambique"
-  },
-
-  {
-    code:"MW",
-    name:"🇲🇼 Malawi"
   }
 
 ];
@@ -573,37 +564,55 @@ Promise.all([
 
 .then(([speciesData, photoData, detailData]) => {
 
-  birds = speciesData.species || [];
+  birds =
+    speciesData.species || [];
 
-  photos = photoData.species || {};
+  photos =
+    photoData.species || {};
 
-  details = detailData.species || {};
+  details =
+    detailData.species || {};
 
-  loaded.textContent = birds.length;
+
+  loaded.textContent =
+    birds.length;
+
 
   let total = 0;
 
-  Object.values(photos).forEach(p => {
 
-    if (!p) return;
+  Object.values(photos)
+    .forEach(p => {
 
-    [
-      "male",
-      "female",
-      "juvenile",
-      "general",
-      "additional"
-    ].forEach(type => {
+      if (!p) return;
 
-      if (Array.isArray(p[type])) {
-        total += p[type].length;
-      }
+
+      [
+        "male",
+        "female",
+        "juvenile",
+        "general",
+        "additional"
+
+      ].forEach(type => {
+
+        if (
+          Array.isArray(p[type])
+        ){
+
+          total +=
+            p[type].length;
+
+        }
+
+      });
 
     });
 
-  });
 
-  photoCount.textContent = total;
+  photoCount.textContent =
+    total;
+
 
   render();
 
@@ -614,20 +623,28 @@ Promise.all([
   console.error(error);
 
   grid.innerHTML = `
+
     <div class="empty">
-      <h2>Unable to load the bird database</h2>
-      <p>Please refresh the page.</p>
+
+      <h2>
+        Unable to load the bird database
+      </h2>
+
+      <p>
+        Please refresh the page.
+      </p>
+
     </div>
+
   `;
 
 });
 
 
-// ============================================================
-// SEARCH
-// ============================================================
-
-q.addEventListener("input", render);
+q.addEventListener(
+  "input",
+  render
+);
 
 
 // ============================================================
@@ -639,23 +656,33 @@ function renderCountries(){
   countryBar.innerHTML = `
 
     <button
-      class="countryChip ${country === "All" ? "on" : ""}"
+      class="chip ${
+        country === "All"
+          ? "on"
+          : ""
+      }"
       onclick="setCountry('All')"
     >
-      🌍 All countries
+      🌍 All four countries
     </button>
 
     ${
-      countries.map(c => `
+      countries
+        .map(c => `
 
-        <button
-          class="countryChip ${country === c.code ? "on" : ""}"
-          onclick="setCountry('${c.code}')"
-        >
-          ${c.name}
-        </button>
+          <button
+            class="chip ${
+              country === c.code
+                ? "on"
+                : ""
+            }"
+            onclick="setCountry('${c.code}')"
+          >
+            ${c.name}
+          </button>
 
-      `).join("")
+        `)
+        .join("")
     }
 
   `;
@@ -676,12 +703,7 @@ function setCountry(code){
 // CHECK COUNTRY
 // ============================================================
 
-function birdIsInCountry(bird){
-
-  if (country === "All") {
-    return true;
-  }
-
+function birdIsInScope(bird){
 
   const d =
     details[bird.id];
@@ -689,28 +711,55 @@ function birdIsInCountry(bird){
 
   if (
     !d ||
-    !Array.isArray(d.distribution)
+    !Array.isArray(
+      d.countries
+    )
   ){
+
     return false;
+
   }
 
 
-  /*
-    GBIF distribution contains many different
-    types of entries.
+  return d.countries.some(
+    code =>
+      countries.some(
+        c => c.code === code
+      )
+  );
 
-    We ONLY treat an exact ISO-style country
-    code as evidence for the country filter.
+}
 
-    This means "Africa" and "Global" do NOT
-    incorrectly make a bird appear in every
-    country.
-  */
 
-  return d.distribution.some(
-    item =>
-      String(item).trim().toUpperCase()
-      === country
+function birdIsInCountry(bird){
+
+  const d =
+    details[bird.id];
+
+
+  if (
+    !d ||
+    !Array.isArray(
+      d.countries
+    )
+  ){
+
+    return false;
+
+  }
+
+
+  if (country === "All"){
+
+    return birdIsInScope(
+      bird
+    );
+
+  }
+
+
+  return d.countries.includes(
+    country
   );
 
 }
@@ -730,29 +779,42 @@ function render(){
     "All",
 
     ...new Set(
+
       birds
-        .map(x => x.family)
+        .filter(
+          bird =>
+            birdIsInScope(bird)
+        )
+        .map(
+          bird =>
+            bird.family
+        )
         .filter(Boolean)
+
     )
 
   ];
 
 
   familyBar.innerHTML =
-    families.map(f => {
-
-      return `
+    families
+      .map(f => `
 
         <button
-          class="chip ${f === family ? "on" : ""}"
-          onclick="setFamily(${JSON.stringify(f)})"
+          class="chip ${
+            f === family
+              ? "on"
+              : ""
+          }"
+          onclick="setFamily(
+            ${JSON.stringify(f)}
+          )"
         >
           ${escapeHTML(f)}
         </button>
 
-      `;
-
-    }).join("");
+      `)
+      .join("");
 
 
   const query =
@@ -762,22 +824,29 @@ function render(){
 
 
   const list =
-    birds.filter(x => {
+    birds.filter(bird => {
+
+      if (
+        !birdIsInCountry(
+          bird
+        )
+      ){
+
+        return false;
+
+      }
+
 
       const familyMatch =
         family === "All" ||
-        x.family === family;
-
-
-      const countryMatch =
-        birdIsInCountry(x);
+        bird.family === family;
 
 
       const text =
-        `${x.name || ""}
-         ${x.scientific || ""}
-         ${x.family || ""}
-         ${x.order || ""}`
+        `${bird.name || ""}
+         ${bird.scientific || ""}
+         ${bird.family || ""}
+         ${bird.order || ""}`
         .toLowerCase();
 
 
@@ -787,11 +856,14 @@ function render(){
 
       return (
         familyMatch &&
-        countryMatch &&
         searchMatch
       );
 
     });
+
+
+  visible.textContent =
+    list.length;
 
 
   if (!list.length){
@@ -800,10 +872,12 @@ function render(){
 
       <div class="empty">
 
-        <h2>No birds found</h2>
+        <h2>
+          No birds found
+        </h2>
 
         <p>
-          No species in the database match
+          No species match
           these filters.
         </p>
 
@@ -824,13 +898,15 @@ function render(){
 
 
   grid.innerHTML =
-    list.map(birdCard).join("");
+    list
+      .map(birdCard)
+      .join("");
 
 }
 
 
 // ============================================================
-// FAMILY FILTER
+// FAMILY
 // ============================================================
 
 function setFamily(value){
@@ -843,7 +919,7 @@ function setFamily(value){
 
 
 // ============================================================
-// CLEAR FILTERS
+// CLEAR
 // ============================================================
 
 function clearFilters(){
@@ -863,14 +939,18 @@ function clearFilters(){
 // BIRD CARD
 // ============================================================
 
-function birdCard(x){
+function birdCard(bird){
 
   const p =
-    photos[x.id];
+    photos[bird.id];
 
 
   const image =
     firstPhoto(p);
+
+
+  const d =
+    details[bird.id] || {};
 
 
   const imageHTML =
@@ -879,8 +959,12 @@ function birdCard(x){
       ? `
 
         <img
-          src="${escapeAttr(image.url)}"
-          alt="${escapeAttr(x.name)}"
+          src="${escapeAttr(
+            image.url
+          )}"
+          alt="${escapeAttr(
+            bird.name
+          )}"
           loading="lazy"
         >
 
@@ -895,6 +979,42 @@ function birdCard(x){
       `;
 
 
+  const birdCountries =
+    Array.isArray(
+      d.countries
+    )
+      ? d.countries
+          .filter(
+            code =>
+              countries.some(
+                c =>
+                  c.code === code
+              )
+          )
+      : [];
+
+
+  const countryHTML =
+    birdCountries
+      .map(code => {
+
+        const c =
+          countries.find(
+            x =>
+              x.code === code
+          );
+
+
+        return c
+          ? `<span class="countryTag">
+               ${c.name}
+             </span>`
+          : "";
+
+      })
+      .join("");
+
+
   return `
 
     <article class="card">
@@ -906,52 +1026,66 @@ function birdCard(x){
 
       <h2>
         ${escapeHTML(
-          x.name || "Unknown"
+          bird.name ||
+          "Unknown"
         )}
       </h2>
 
 
       <div class="sci">
         ${escapeHTML(
-          x.scientific || ""
+          bird.scientific ||
+          ""
         )}
       </div>
 
 
       ${
-        x.family
+        bird.family
+
           ? `
 
             <span class="tag">
-              ${escapeHTML(x.family)}
+              ${escapeHTML(
+                bird.family
+              )}
             </span>
 
           `
+
           : ""
       }
 
 
       ${
-        x.status
+        d.conservation_status
+
           ? `
 
             <span class="tag status">
               ${escapeHTML(
-                formatStatus(x.status)
+                formatStatus(
+                  d.conservation_status
+                )
               )}
             </span>
 
           `
+
           : ""
       }
 
 
-      <br>
+      <div class="countryTags">
+        ${countryHTML}
+      </div>
 
 
       <button
         class="btn"
-        onclick="openBird('${escapeAttr(x.id)}')"
+        onclick="openBird(
+          '${escapeAttr(bird.id)}'
+        )"
       >
         View species
       </button>
@@ -964,7 +1098,7 @@ function birdCard(x){
 
 
 // ============================================================
-// FIRST PHOTO
+// PHOTO
 // ============================================================
 
 function firstPhoto(p){
@@ -977,16 +1111,20 @@ function firstPhoto(p){
     "male",
     "female",
     "juvenile",
-    "general",
-    "additional"
+    "additional",
+    "general"
 
   ];
 
 
-  for (const type of order){
+  for (
+    const type of order
+  ){
 
     if (
-      Array.isArray(p[type]) &&
+      Array.isArray(
+        p[type]
+      ) &&
       p[type].length
     ){
 
@@ -1003,7 +1141,7 @@ function firstPhoto(p){
 
 
 // ============================================================
-// OPEN SPECIES
+// SPECIES PAGE
 // ============================================================
 
 function openBird(id){
@@ -1046,12 +1184,48 @@ function openBird(id){
   let additional = [];
 
 
-  if (Array.isArray(p.additional)){
-    additional = p.additional;
+  if (
+    Array.isArray(
+      p.additional
+    )
+  ){
+
+    additional =
+      p.additional;
+
   }
-  else if (Array.isArray(p.general)){
-    additional = p.general;
+  else if (
+    Array.isArray(
+      p.general
+    )
+  ){
+
+    additional =
+      p.general;
+
   }
+
+
+  const birdCountries =
+    Array.isArray(
+      d.countries
+    )
+      ? d.countries
+          .map(code => {
+
+            const c =
+              countries.find(
+                x =>
+                  x.code === code
+              );
+
+            return c
+              ? c.name
+              : null;
+
+          })
+          .filter(Boolean)
+      : [];
 
 
   detail.innerHTML = `
@@ -1060,14 +1234,16 @@ function openBird(id){
 
       <h1>
         ${escapeHTML(
-          bird.name || "Unknown"
+          bird.name ||
+          "Unknown"
         )}
       </h1>
 
 
       <p class="sci">
         ${escapeHTML(
-          bird.scientific || ""
+          bird.scientific ||
+          ""
         )}
       </p>
 
@@ -1105,7 +1281,6 @@ function openBird(id){
           ${escapeHTML(
             formatStatus(
               d.conservation_status ||
-              bird.status ||
               "Not recorded"
             )
           )}
@@ -1115,9 +1290,15 @@ function openBird(id){
 
         <div class="info">
 
-          <b>Region</b>
+          <b>Countries</b>
 
-          Eastern Africa
+          ${
+            birdCountries.length
+              ? birdCountries.join(
+                  ", "
+                )
+              : "Not recorded"
+          }
 
         </div>
 
@@ -1177,16 +1358,25 @@ function openBird(id){
         </div>
 
 
-        <div class="info">
+        ${
+          d.habitat
 
-          <b>Species ID</b>
+            ? `
 
-          ${escapeHTML(
-            bird.id ||
-            "Unknown"
-          )}
+              <div class="info">
 
-        </div>
+                <b>Habitat</b>
+
+                ${escapeHTML(
+                  d.habitat
+                )}
+
+              </div>
+
+            `
+
+            : ""
+        }
 
       </div>
 
@@ -1197,7 +1387,11 @@ function openBird(id){
 
       <button
         class="btn"
-        onclick="addLife('${escapeAttr(bird.id)}')"
+        onclick="addLife(
+          '${escapeAttr(
+            bird.id
+          )}'
+        )"
       >
         ⭐ Add to Life List
       </button>
@@ -1215,7 +1409,8 @@ function openBird(id){
   `;
 
 
-  modal.style.display = "flex";
+  modal.style.display =
+    "flex";
 
 }
 
@@ -1243,12 +1438,9 @@ function photoSection(
           ${title}
         </h2>
 
-
         <div class="noPhoto">
-
           No suitable ${type}
           photograph was found.
-
         </div>
 
       </div>
@@ -1322,7 +1514,9 @@ function photoHTML(p){
     <div class="photoBox">
 
       <img
-        src="${escapeAttr(p.url)}"
+        src="${escapeAttr(
+          p.url
+        )}"
         alt="Bird photograph"
         loading="lazy"
       >
@@ -1331,17 +1525,23 @@ function photoHTML(p){
       <div class="credit">
 
         <b>
-          ${escapeHTML(provider)}
+          ${escapeHTML(
+            provider
+          )}
         </b>
 
         <br>
 
-        ${escapeHTML(artist)}
+        ${escapeHTML(
+          artist
+        )}
 
         <br>
 
         Licence:
-        ${escapeHTML(licence)}
+        ${escapeHTML(
+          licence
+        )}
 
       </div>
 
@@ -1360,12 +1560,15 @@ function addLife(id){
 
   let list =
     JSON.parse(
-      localStorage.getItem("life")
-      || "[]"
+      localStorage.getItem(
+        "life"
+      ) || "[]"
     );
 
 
-  if (!list.includes(id)){
+  if (
+    !list.includes(id)
+  ){
 
     list.push(id);
 
@@ -1394,18 +1597,21 @@ function showLife(){
 
   document.getElementById(
     "explore"
-  ).style.display = "none";
+  ).style.display =
+    "none";
 
 
   document.getElementById(
     "lifeList"
-  ).style.display = "block";
+  ).style.display =
+    "block";
 
 
   const list =
     JSON.parse(
-      localStorage.getItem("life")
-      || "[]"
+      localStorage.getItem(
+        "life"
+      ) || "[]"
     );
 
 
@@ -1425,7 +1631,6 @@ function showLife(){
           Your Life List is empty
         </h2>
 
-
         <p>
           Open a species and press
           "Add to Life List" when you
@@ -1444,79 +1649,88 @@ function showLife(){
   const saved =
     birds.filter(
       bird =>
-        list.includes(bird.id)
+        list.includes(
+          bird.id
+        )
     );
 
 
   container.innerHTML =
-    saved.map(bird => {
+    saved
+      .map(bird => {
 
-      const p =
-        photos[bird.id];
-
-
-      const image =
-        firstPhoto(p);
-
-
-      return `
-
-        <div class="lifeCard">
-
-          ${
-            image
-
-              ? `
-
-                <img
-                  src="${escapeAttr(
-                    image.url
-                  )}"
-                  style="
-                    width:100%;
-                    height:auto;
-                    max-height:400px;
-                    object-fit:contain;
-                    border-radius:13px;
-                  "
-                >
-
-              `
-
-              : ""
-          }
+        const p =
+          photos[
+            bird.id
+          ];
 
 
-          <h3>
-            ${escapeHTML(
-              bird.name
-            )}
-          </h3>
+        const image =
+          firstPhoto(p);
 
 
-          <div class="sci">
+        return `
 
-            ${escapeHTML(
-              bird.scientific || ""
-            )}
+          <div class="lifeCard">
+
+            ${
+              image
+
+                ? `
+
+                  <img
+                    src="${escapeAttr(
+                      image.url
+                    )}"
+                    style="
+                      width:100%;
+                      height:auto;
+                      max-height:400px;
+                      object-fit:contain;
+                      border-radius:13px;
+                    "
+                  >
+
+                `
+
+                : ""
+            }
+
+
+            <h3>
+              ${escapeHTML(
+                bird.name
+              )}
+            </h3>
+
+
+            <div class="sci">
+
+              ${escapeHTML(
+                bird.scientific ||
+                ""
+              )}
+
+            </div>
+
+
+            <button
+              class="btn"
+              onclick="openBird(
+                '${escapeAttr(
+                  bird.id
+                )}'
+              )"
+            >
+              View species
+            </button>
 
           </div>
 
+        `;
 
-          <button
-            class="btn"
-            onclick="openBird('${escapeAttr(
-              bird.id
-            )}')"
-          >
-            View species
-          </button>
-
-        </div>
-
-      `;
-
-    }).join("");
+      })
+      .join("");
 
 }
 
@@ -1525,12 +1739,14 @@ function showExplore(){
 
   document.getElementById(
     "explore"
-  ).style.display = "block";
+  ).style.display =
+    "block";
 
 
   document.getElementById(
     "lifeList"
-  ).style.display = "none";
+  ).style.display =
+    "none";
 
 }
 
@@ -1545,19 +1761,18 @@ function about(){
 
 `East African Birds
 
-A field-guide style database for birds of Eastern Africa.
+A field-guide style database covering:
 
-Bird database:
-Avibase Eastern Africa checklist
-
-Taxonomy:
-Clements 2025
+🇰🇪 Kenya
+🇹🇿 Tanzania
+🇺🇬 Uganda
+🇪🇹 Ethiopia
 
 Species information:
 GBIF Species API
 
 Photographs:
-Wikimedia Commons / existing photo database
+Existing licensed photo database
 
 The app does not use AI bird identification.`
 
@@ -1572,7 +1787,8 @@ The app does not use AI bird identification.`
 
 function closeModal(){
 
-  modal.style.display = "none";
+  modal.style.display =
+    "none";
 
 }
 
@@ -1599,14 +1815,19 @@ modal.addEventListener(
 
 function formatStatus(status){
 
-  if (!status) return "";
+  if (!status)
+    return "";
 
 
   return String(status)
-    .replaceAll("_"," ")
+    .replaceAll(
+      "_",
+      " "
+    )
     .replace(
       /\b\w/g,
-      c => c.toUpperCase()
+      c =>
+        c.toUpperCase()
     );
 
 }
@@ -1614,20 +1835,43 @@ function formatStatus(status){
 
 function escapeHTML(value){
 
-  return String(value ?? "")
+  return String(
+    value ?? ""
+  )
 
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
 
 }
 
 
 function escapeAttr(value){
 
-  return escapeHTML(value);
+  return escapeHTML(
+    value
+  );
 
 }
 
