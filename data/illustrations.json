@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "purpose": "Verified bird illustration/source manifest. Only public-domain or otherwise explicitly reusable artwork should be activated.",
+  "source_policy": "Prefer public-domain scientific plates; preserve source, artist, publication, date, licence and original URL.",
+  "sources": [
+    {
+      "source_id": "shelley-birds-of-africa-commons",
+      "provider": "Wikimedia Commons",
+      "work": "The Birds of Africa",
+      "author": "George Ernest Shelley",
+      "illustrator": "Henrik Grönvold",
+      "dates": "1896–1912",
+      "licence": "Public Domain",
+      "source_url": "https://commons.wikimedia.org/wiki/Category:Shelley_-_The_Birds_of_Africa"
+    }
+  ],
+  "species": {}
+}
