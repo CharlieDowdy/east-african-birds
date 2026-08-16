@@ -4,6 +4,7 @@ from pathlib import Path
 
 import requests
 
+
 ROOT = Path(__file__).resolve().parents[1]
 
 SPECIES_FILE = ROOT / "data" / "species.json"
@@ -11,43 +12,109 @@ DETAILS_FILE = ROOT / "data" / "species_details.json"
 
 GBIF = "https://api.gbif.org/v1/species"
 
+
+# ============================================================
+# COUNTRIES USED BY THE WEBSITE
+# ============================================================
+
+TARGET_COUNTRIES = {
+    "KE": "Kenya",
+    "TZ": "Tanzania",
+    "UG": "Uganda",
+    "ET": "Ethiopia",
+}
+
+
+# GBIF can return either country codes or country names
+# depending on the record. Normalise both.
+COUNTRY_ALIASES = {
+    "KE": "KE",
+    "KENYA": "KE",
+
+    "TZ": "TZ",
+    "TANZANIA": "TZ",
+    "UNITED REPUBLIC OF TANZANIA": "TZ",
+
+    "UG": "UG",
+    "UGANDA": "UG",
+
+    "ET": "ET",
+    "ETHIOPIA": "ET",
+}
+
+
 SESSION = requests.Session()
+
 SESSION.headers.update({
     "User-Agent": "EastAfricanBirds/1.0"
 })
 
 
-def get_json(url, params=None):
-    try:
-        response = SESSION.get(
-            url,
-            params=params,
-            timeout=30
-        )
+# ============================================================
+# API REQUEST
+# ============================================================
 
-        if response.status_code == 429:
-            time.sleep(5)
+def get_json(url, params=None):
+
+    for attempt in range(3):
+
+        try:
+
             response = SESSION.get(
                 url,
                 params=params,
                 timeout=30
             )
 
-        if not response.ok:
+            if response.status_code == 429:
+
+                wait = 5 * (attempt + 1)
+
+                print(
+                    f"  Rate limited. "
+                    f"Waiting {wait}s..."
+                )
+
+                time.sleep(wait)
+
+                continue
+
+
+            if not response.ok:
+
+                print(
+                    f"  GBIF request failed: "
+                    f"{response.status_code}"
+                )
+
+                return None
+
+
+            return response.json()
+
+
+        except requests.RequestException as exc:
+
             print(
-                f"GBIF request failed: "
-                f"{response.status_code} {url}"
+                f"  Request error: {exc}"
             )
-            return None
 
-        return response.json()
+            if attempt < 2:
+                time.sleep(3)
 
-    except requests.RequestException as exc:
-        print(f"Request error: {exc}")
-        return None
+            else:
+                return None
 
+
+    return None
+
+
+# ============================================================
+# SPECIES MATCH
+# ============================================================
 
 def match_species(scientific_name):
+
     data = get_json(
         f"{GBIF}/match",
         {
@@ -58,119 +125,338 @@ def match_species(scientific_name):
     if not data:
         return None
 
+
     key = data.get("usageKey")
+
 
     if not key:
         return None
 
+
     return {
+
         "gbif_key": key,
-        "matched_name": data.get("scientificName"),
-        "canonical_name": data.get("canonicalName"),
-        "match_type": data.get("matchType")
+
+        "matched_name":
+            data.get("scientificName"),
+
+        "canonical_name":
+            data.get("canonicalName"),
+
+        "match_type":
+            data.get("matchType")
+
     }
 
 
+# ============================================================
+# PROFILE
+# ============================================================
+
 def get_profile(key):
+
     return get_json(
         f"{GBIF}/{key}/speciesProfiles"
     )
 
 
+# ============================================================
+# CONSERVATION STATUS
+# ============================================================
+
 def get_status(key):
+
     return get_json(
         f"{GBIF}/{key}/iucnRedListCategory"
     )
 
 
+# ============================================================
+# DISTRIBUTION
+# ============================================================
+
 def get_distribution(key):
+
     return get_json(
         f"{GBIF}/{key}/distributions"
     )
 
 
+# ============================================================
+# CLEAN PROFILE
+# ============================================================
+
 def clean_profile(data):
+
     if not data:
         return {}
 
-    results = data.get("results", [])
+
+    results = data.get(
+        "results",
+        []
+    )
+
 
     if not results:
         return {}
+
 
     profile = results[0]
 
     output = {}
 
+
     if profile.get("habitat"):
         output["habitat"] = profile["habitat"]
 
+
     if profile.get("sizeInMillimeter"):
-        output["size_mm"] = profile["sizeInMillimeter"]
+        output["size_mm"] = (
+            profile["sizeInMillimeter"]
+        )
+
 
     if profile.get("massInGram"):
-        output["mass_g"] = profile["massInGram"]
+        output["mass_g"] = (
+            profile["massInGram"]
+        )
+
 
     return output
 
 
+# ============================================================
+# CLEAN STATUS
+# ============================================================
+
 def clean_status(data):
+
     if not data:
         return None
 
+
     return (
         data.get("category")
-        or data.get("iucnRedListCategory")
+        or
+        data.get(
+            "iucnRedListCategory"
+        )
     )
 
 
+# ============================================================
+# FIND OUR FOUR COUNTRIES
+# ============================================================
+
 def clean_distribution(data):
+
     if not data:
-        return []
+        return {
+            "distribution": [],
+            "countries": []
+        }
 
-    results = data.get("results", [])
 
-    countries = []
+    results = data.get(
+        "results",
+        []
+    )
+
+
+    raw_distribution = []
+
+    found_countries = set()
+
 
     for item in results:
 
-        country = (
-            item.get("country")
-            or item.get("locality")
+        if not isinstance(item, dict):
+            continue
+
+
+        # Keep the original country/locality
+        # information for reference.
+        country = item.get("country")
+
+        locality = item.get("locality")
+
+
+        value = (
+            country
+            or locality
         )
 
-        if country and country not in countries:
-            countries.append(country)
 
-    return countries
+        if value and value not in raw_distribution:
 
+            raw_distribution.append(value)
+
+
+        # ----------------------------------------------------
+        # Country field
+        # ----------------------------------------------------
+
+        if country:
+
+            country_text = (
+                str(country)
+                .strip()
+                .upper()
+            )
+
+
+            if country_text in COUNTRY_ALIASES:
+
+                found_countries.add(
+                    COUNTRY_ALIASES[
+                        country_text
+                    ]
+                )
+
+
+        # ----------------------------------------------------
+        # Some GBIF records may return the country
+        # inside a locality-style value.
+        # ----------------------------------------------------
+
+        if locality:
+
+            locality_text = (
+                str(locality)
+                .strip()
+                .upper()
+            )
+
+
+            for alias, code in COUNTRY_ALIASES.items():
+
+                if alias in locality_text:
+
+                    found_countries.add(
+                        code
+                    )
+
+
+    countries = [
+
+        code
+
+        for code in TARGET_COUNTRIES
+
+        if code in found_countries
+
+    ]
+
+
+    return {
+
+        "distribution":
+            raw_distribution,
+
+        "countries":
+            countries
+
+    }
+
+
+# ============================================================
+# SAVE DATABASE
+# ============================================================
+
+def save_database(details):
+
+    output = {
+
+        "version": 3,
+
+        "generated_by":
+            "scripts/enrich_species.py",
+
+        "scope": [
+            "KE",
+            "TZ",
+            "UG",
+            "ET"
+        ],
+
+        "scope_names": [
+            "Kenya",
+            "Tanzania",
+            "Uganda",
+            "Ethiopia"
+        ],
+
+        "sources": [
+            "GBIF Species API"
+        ],
+
+        "species":
+            details
+
+    }
+
+
+    DETAILS_FILE.write_text(
+
+        json.dumps(
+            output,
+            ensure_ascii=False,
+            indent=2
+        ),
+
+        encoding="utf-8"
+
+    )
+
+
+# ============================================================
+# MAIN
+# ============================================================
 
 def main():
 
     if not SPECIES_FILE.exists():
+
         raise SystemExit(
             "data/species.json was not found"
         )
 
+
     database = json.loads(
+
         SPECIES_FILE.read_text(
             encoding="utf-8"
         )
+
     )
 
-    birds = database.get("species", [])
+
+    birds = database.get(
+        "species",
+        []
+    )
+
 
     if not birds:
+
         raise SystemExit(
             "No species found in species.json"
         )
 
+
+    # --------------------------------------------------------
+    # Load existing database
+    # --------------------------------------------------------
+
     if DETAILS_FILE.exists():
 
         existing = json.loads(
+
             DETAILS_FILE.read_text(
                 encoding="utf-8"
             )
+
         )
 
         details = existing.get(
@@ -179,11 +465,38 @@ def main():
         )
 
     else:
+
         details = {}
 
+
+    print()
+    print("=" * 60)
+    print("East African Birds - Country Enrichment")
+    print("=" * 60)
+    print()
     print(
-        f"Enriching {len(birds)} species..."
+        f"Total species: {len(birds)}"
     )
+    print()
+    print(
+        "Website countries:"
+    )
+    print(
+        "  🇰🇪 Kenya"
+    )
+    print(
+        "  🇹🇿 Tanzania"
+    )
+    print(
+        "  🇺🇬 Uganda"
+    )
+    print(
+        "  🇪🇹 Ethiopia"
+    )
+    print()
+    print("=" * 60)
+    print()
+
 
     for number, bird in enumerate(
         birds,
@@ -191,116 +504,292 @@ def main():
     ):
 
         species_id = bird["id"]
-        scientific = bird.get("scientific")
+
+        scientific = bird.get(
+            "scientific"
+        )
+
 
         if not scientific:
+
             continue
 
-        # Don't repeatedly fetch records
-        # that have already been matched.
+
         current = details.get(
             species_id,
             {}
         )
 
-        if current.get("gbif_key"):
-            print(
-                f"[{number}/{len(birds)}] "
-                f"{bird.get('name')} "
-                f"- already enriched"
-            )
-            continue
 
         print(
             f"[{number}/{len(birds)}] "
-            f"{bird.get('name')} "
-            f"({scientific})"
+            f"{bird.get('name')}"
         )
 
-        match = match_species(scientific)
 
-        if not match:
-            details[species_id] = {
-                "sources": [
-                    {
-                        "provider": "GBIF",
-                        "matched": False
-                    }
-                ]
+        # ----------------------------------------------------
+        # Use existing GBIF key where possible.
+        #
+        # This is important because it means the workflow
+        # doesn't need to rematch all 1,851 birds.
+        # ----------------------------------------------------
+
+        key = current.get(
+            "gbif_key"
+        )
+
+
+        if not key:
+
+            print(
+                f"  Matching: "
+                f"{scientific}"
+            )
+
+
+            match = match_species(
+                scientific
+            )
+
+
+            if not match:
+
+                print(
+                    "  ✗ Could not match species"
+                )
+
+                details[species_id] = {
+
+                    **current,
+
+                    "countries": [],
+
+                    "sources": [
+
+                        {
+
+                            "provider":
+                                "GBIF",
+
+                            "matched":
+                                False
+
+                        }
+
+                    ]
+
+                }
+
+
+                save_database(
+                    details
+                )
+
+                time.sleep(0.2)
+
+                continue
+
+
+            key = match[
+                "gbif_key"
+            ]
+
+
+            current = {
+
+                **current,
+
+                "gbif_key":
+                    key,
+
+                "matched_name":
+                    match[
+                        "matched_name"
+                    ],
+
+                "match_type":
+                    match[
+                        "match_type"
+                    ]
+
             }
 
-            continue
 
-        key = match["gbif_key"]
+        # ----------------------------------------------------
+        # IMPORTANT:
+        #
+        # Always refresh distribution.
+        #
+        # This fixes the old database instead of skipping
+        # already-enriched species.
+        # ----------------------------------------------------
 
-        profile = clean_profile(
-            get_profile(key)
+        print(
+            "  Checking distribution..."
         )
 
-        status = clean_status(
-            get_status(key)
-        )
 
-        distribution = clean_distribution(
+        distribution_data = (
             get_distribution(key)
         )
 
-        record = {
-            **profile,
 
-            "gbif_key": key,
-
-            "matched_name":
-                match["matched_name"],
-
-            "match_type":
-                match["match_type"],
-
-            "conservation_status":
-                status,
-
-            "distribution":
-                distribution,
-
-            "sources": [
-                {
-                    "provider": "GBIF",
-                    "species_api":
-                        f"https://api.gbif.org/v1/species/{key}"
-                }
-            ]
-        }
-
-        details[species_id] = record
-
-        # Save continuously so a temporary
-        # failure doesn't lose everything.
-        output = {
-            "version": 2,
-            "generated_by":
-                "scripts/enrich_species.py",
-            "sources": [
-                "GBIF Species API"
-            ],
-            "species": details
-        }
-
-        DETAILS_FILE.write_text(
-            json.dumps(
-                output,
-                ensure_ascii=False,
-                indent=2
-            ),
-            encoding="utf-8"
+        cleaned = clean_distribution(
+            distribution_data
         )
 
-        # Be polite to the API.
-        time.sleep(0.15)
 
+        countries = cleaned[
+            "countries"
+        ]
+
+
+        print(
+            "  Countries: "
+            +
+            (
+                ", ".join(
+                    countries
+                )
+                if countries
+                else "None found"
+            )
+        )
+
+
+        # ----------------------------------------------------
+        # Preserve existing information.
+        # ----------------------------------------------------
+
+        current[
+            "distribution"
+        ] = cleaned[
+            "distribution"
+        ]
+
+
+        current[
+            "countries"
+        ] = countries
+
+
+        # ----------------------------------------------------
+        # Only fetch profile/status when missing.
+        # ----------------------------------------------------
+
+        if not current.get(
+            "habitat"
+        ):
+
+            profile = clean_profile(
+                get_profile(key)
+            )
+
+            current.update(
+                profile
+            )
+
+
+        if (
+            "conservation_status"
+            not in current
+        ):
+
+            status = clean_status(
+                get_status(key)
+            )
+
+            current[
+                "conservation_status"
+            ] = status
+
+
+        current[
+            "sources"
+        ] = [
+
+            {
+
+                "provider":
+                    "GBIF",
+
+                "species_api":
+                    f"{GBIF}/{key}"
+
+            }
+
+        ]
+
+
+        details[
+            species_id
+        ] = current
+
+
+        # ----------------------------------------------------
+        # Save after EVERY bird.
+        # ----------------------------------------------------
+
+        save_database(
+            details
+        )
+
+
+        # ----------------------------------------------------
+        # API delay.
+        # ----------------------------------------------------
+
+        time.sleep(
+            0.25
+        )
+
+
+    # ========================================================
+    # FINAL SUMMARY
+    # ========================================================
+
+    counts = {
+        "KE": 0,
+        "TZ": 0,
+        "UG": 0,
+        "ET": 0
+    }
+
+
+    for record in details.values():
+
+        for code in record.get(
+            "countries",
+            []
+        ):
+
+            if code in counts:
+
+                counts[code] += 1
+
+
+    print()
+    print("=" * 60)
+    print("COUNTRY ENRICHMENT COMPLETE")
+    print("=" * 60)
+    print()
     print(
-        f"Finished. "
-        f"Records written: {len(details)}"
+        f"🇰🇪 Kenya:      {counts['KE']}"
     )
+    print(
+        f"🇹🇿 Tanzania:   {counts['TZ']}"
+    )
+    print(
+        f"🇺🇬 Uganda:     {counts['UG']}"
+    )
+    print(
+        f"🇪🇹 Ethiopia:   {counts['ET']}"
+    )
+    print()
+    print(
+        "species_details.json updated."
+    )
+    print("=" * 60)
 
 
 if __name__ == "__main__":
