@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "description": "Per-species diagram manifest for the East African Birds digital field guide.",
+  "art_style": "Original scientific field-guide plate: clean natural-history illustration, accurate proportions and plumage, neutral background, no decorative text baked into the artwork.",
+  "license_policy": "Only original artwork or assets with verified reuse rights may be added. Do not reproduce copyrighted field-guide plates.",
+  "assets": {},
+  "status": {
+    "planned": 0,
+    "ready": 0,
+    "review": 0
+  }
+}
