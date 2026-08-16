@@ -17,7 +17,6 @@
   --muted:#68736b;
   --border:#dce4dc;
   --soft:#eef3ee;
-  --gold:#c99720;
 }
 
 body{
@@ -29,7 +28,7 @@ body{
 
 header{
   background:var(--green);
-  color:white;
+  color:#fff;
   padding:30px 18px 28px;
   border-radius:0 0 30px 30px;
 }
@@ -39,7 +38,9 @@ header{
   margin:auto;
 }
 
-.wrap{padding:0 18px}
+.wrap{
+  padding:0 18px;
+}
 
 .logo{
   font-size:11px;
@@ -64,7 +65,7 @@ main{
 }
 
 .hero{
-  background:white;
+  background:#fff;
   border-radius:22px;
   padding:20px;
   margin-bottom:18px;
@@ -120,7 +121,7 @@ main{
 
 .chip{
   border:1px solid var(--border);
-  background:white;
+  background:#fff;
   border-radius:99px;
   padding:9px 14px;
   white-space:nowrap;
@@ -130,7 +131,7 @@ main{
 
 .chip.on{
   background:var(--green);
-  color:white;
+  color:#fff;
   border-color:var(--green);
 }
 
@@ -142,7 +143,7 @@ main{
 }
 
 .stat{
-  background:white;
+  background:#fff;
   border-radius:16px;
   padding:14px;
   border:1px solid var(--border);
@@ -185,7 +186,7 @@ main{
 }
 
 .card{
-  background:white;
+  background:#fff;
   border-radius:20px;
   overflow:hidden;
   box-shadow:0 4px 16px #0000000c;
@@ -193,7 +194,7 @@ main{
 }
 
 .thumb{
-  height:175px;
+  height:190px;
   background:#e1eadf;
   display:grid;
   place-items:center;
@@ -205,6 +206,7 @@ main{
   width:100%;
   height:100%;
   object-fit:cover;
+  display:block;
 }
 
 .placeholder{
@@ -215,7 +217,7 @@ main{
   position:absolute;
   top:10px;
   right:10px;
-  background:white;
+  background:#fff;
   border-radius:99px;
   padding:6px 9px;
   font-size:12px;
@@ -268,7 +270,7 @@ main{
   border-radius:11px;
   padding:10px 13px;
   background:var(--green);
-  color:white;
+  color:#fff;
   font-weight:700;
   margin-top:11px;
   cursor:pointer;
@@ -284,7 +286,7 @@ main{
 }
 
 .empty{
-  background:white;
+  background:#fff;
   padding:35px 20px;
   text-align:center;
   border-radius:18px;
@@ -301,7 +303,7 @@ main{
 }
 
 .sheet{
-  background:white;
+  background:#fff;
   width:100%;
   max-width:850px;
   margin:auto;
@@ -378,20 +380,27 @@ main{
 .photos{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:9px;
+  gap:10px;
+}
+
+.photo-card{
+  background:#f5f7f4;
+  border-radius:14px;
+  overflow:hidden;
 }
 
 .photos img{
   width:100%;
-  height:190px;
+  height:210px;
   object-fit:cover;
-  border-radius:13px;
+  display:block;
 }
 
 .credit{
   font-size:11px;
   color:var(--muted);
-  margin-top:4px;
+  padding:8px 10px 10px;
+  line-height:1.4;
 }
 
 .notes{
@@ -432,7 +441,7 @@ main{
 .tabs{
   position:sticky;
   bottom:10px;
-  background:white;
+  background:#fff;
   border-radius:18px;
   padding:7px;
   display:flex;
@@ -488,6 +497,7 @@ main{
   .photos{
     grid-template-columns:1fr;
   }
+
 }
 </style>
 </head>
@@ -526,7 +536,6 @@ main{
 
 </section>
 
-
 <div class="stats">
 
   <div class="stat">
@@ -546,13 +555,11 @@ main{
 
 </div>
 
-
 <div class="section-title">
   <h2>Browse families</h2>
 </div>
 
 <div id="bar" class="bar"></div>
-
 
 <div class="section-title">
 
@@ -566,9 +573,7 @@ main{
 
 </div>
 
-
 <div id="grid" class="grid"></div>
-
 
 <div class="footer">
 
@@ -587,7 +592,6 @@ main{
   </p>
 
 </div>
-
 
 <div class="tabs">
 
@@ -614,7 +618,6 @@ main{
 
 </main>
 
-
 <div id="modal" class="modal">
 
   <div class="sheet">
@@ -632,13 +635,12 @@ main{
 
 </div>
 
-
 <script>
 
 let birds=[];
 let details={};
+let photos={};
 let family="All";
-let photoCache={};
 let currentView="explore";
 
 
@@ -651,7 +653,7 @@ const sort=document.getElementById("sort");
 
 
 /* =========================
-   LOAD DATABASE
+   LOAD ALL THREE DATABASES
 ========================= */
 
 Promise.all([
@@ -661,15 +663,21 @@ Promise.all([
 
   fetch("data/species_details.json")
     .then(r=>r.json())
-    .catch(()=>({species:{}}))
+    .catch(()=>({species:{}})),
+
+  fetch("data/photos.json")
+    .then(r=>r.json())
+    .catch(()=>({}))
 
 ])
 
-.then(([database,extra])=>{
+.then(([database,extra,photoDatabase])=>{
 
   birds=database.species||[];
 
   details=extra.species||{};
+
+  photos=photoDatabase||{};
 
   updateStats();
 
@@ -690,7 +698,7 @@ Promise.all([
       <h2>Unable to load bird database</h2>
 
       <p>
-        Check that data/species.json exists.
+        Check that the database files exist.
       </p>
 
     </div>
@@ -777,7 +785,9 @@ function getNote(id){
 function saveNote(id){
 
   const box=
-    document.getElementById("note-"+id);
+    document.getElementById(
+      "note-"+id
+    );
 
   if(!box)return;
 
@@ -787,7 +797,9 @@ function saveNote(id){
   );
 
   const saved=
-    document.getElementById("saved-"+id);
+    document.getElementById(
+      "saved-"+id
+    );
 
   if(saved){
 
@@ -803,7 +815,7 @@ function saveNote(id){
 
 
 /* =========================
-   STATISTICS
+   STATS
 ========================= */
 
 function updateStats(){
@@ -868,7 +880,7 @@ function setFamily(f){
 
 
 /* =========================
-   SEARCH / SORT
+   SEARCH
 ========================= */
 
 q.addEventListener(
@@ -883,7 +895,7 @@ sort.addEventListener(
 
 
 /* =========================
-   RENDER BIRDS
+   RENDER
 ========================= */
 
 function render(){
@@ -986,204 +998,111 @@ function render(){
   }
 
 
-  grid.innerHTML=list.map(x=>`
+  grid.innerHTML=list.map(x=>{
 
-    <article class="card">
+    const birdPhotos=
+      photos[x.id]||[];
 
-      <div
-        class="thumb"
-        id="t-${escapeHTML(x.id)}"
-      >
+    const firstPhoto=
+      birdPhotos[0];
 
-        <div class="placeholder">
-          🐦
+
+    return `
+
+      <article class="card">
+
+        <div class="thumb">
+
+          ${
+            firstPhoto
+            ? `
+              <img
+                src="${escapeAttribute(
+                  firstPhoto.url
+                )}"
+                alt="${escapeAttribute(
+                  x.name
+                )}"
+                loading="lazy"
+              >
+            `
+            : `
+              <div class="placeholder">
+                🐦
+              </div>
+            `
+          }
+
+
+          ${
+            isSeen(x.id)
+            ? `<div class="seen-badge">⭐ Seen</div>`
+            : ""
+          }
+
         </div>
 
-        ${
-          isSeen(x.id)
-          ? `<div class="seen-badge">⭐ Seen</div>`
-          : ""
-        }
 
-      </div>
+        <div class="card-body">
+
+          <h2>
+            ${escapeHTML(
+              x.name||"Unknown"
+            )}
+          </h2>
+
+          <div class="sci">
+            ${escapeHTML(
+              x.scientific||""
+            )}
+          </div>
 
 
-      <div class="card-body">
+          ${
+            x.family
+            ? `
+              <span class="tag">
+                ${escapeHTML(x.family)}
+              </span>
+            `
+            : ""
+          }
 
-        <h2>
-          ${escapeHTML(x.name||"Unknown")}
-        </h2>
 
-        <div class="sci">
-          ${escapeHTML(x.scientific||"")}
+          ${
+            x.status
+            ? `
+              <span class="tag">
+                ${escapeHTML(x.status)}
+              </span>
+            `
+            : ""
+          }
+
+
+          <button
+            class="btn full"
+            onclick='openBird(${JSON.stringify(x.id)})'
+          >
+            View species
+          </button>
+
         </div>
 
-
-        ${
-          x.family
-          ? `
-            <span class="tag">
-              ${escapeHTML(x.family)}
-            </span>
-          `
-          : ""
-        }
-
-
-        ${
-          x.status
-          ? `
-            <span class="tag status">
-              ${escapeHTML(x.status)}
-            </span>
-          `
-          : ""
-        }
-
-
-        <button
-          class="btn full"
-          onclick='openBird(${JSON.stringify(x.id)})'
-        >
-          View species
-        </button>
-
-      </div>
-
-    </article>
-
-  `).join("");
-
-
-  list
-    .slice(0,40)
-    .forEach(loadThumb);
-
-}
-
-
-/* =========================
-   INATURALIST
-========================= */
-
-async function api(params){
-
-  const url=
-    "https://api.inaturalist.org/v2/observations?"
-    +params
-    +"&photo_license=cc0,cc-by,cc-by-sa"
-    +"&quality_grade=research"
-    +"&per_page=6"
-    +"&order_by=votes"
-    +"&order=desc";
-
-
-  try{
-
-    const response=
-      await fetch(url);
-
-    if(!response.ok){
-
-      return {
-        results:[]
-      };
-
-    }
-
-    return await response.json();
-
-  }catch{
-
-    return {
-      results:[]
-    };
-
-  }
-
-}
-
-
-async function loadThumb(bird){
-
-  if(
-    photoCache[bird.id]!==undefined
-  ){
-    return;
-  }
-
-
-  const data=await api(
-    "taxon_name="+
-    encodeURIComponent(
-      bird.scientific
-    )
-  );
-
-
-  const photo=
-    data.results
-      ?.flatMap(
-        o=>o.photos||[]
-      )
-      .find(p=>
-        [
-          "cc0",
-          "cc-by",
-          "cc-by-sa"
-        ].includes(
-          p.license_code
-        )
-      );
-
-
-  photoCache[bird.id]=
-    photo||null;
-
-
-  const element=
-    document.getElementById(
-      "t-"+bird.id
-    );
-
-
-  if(photo && element){
-
-    const url=
-      photo.url
-      ? photo.url.replace(
-          "/medium.",
-          "/large."
-        )
-      : photo.original_url;
-
-
-    element.innerHTML=`
-
-      ${
-        isSeen(bird.id)
-        ? `<div class="seen-badge">⭐ Seen</div>`
-        : ""
-      }
-
-      <img
-        src="${url}"
-        alt="${escapeHTML(bird.name)}"
-        loading="lazy"
-      >
+      </article>
 
     `;
 
-  }
+  }).join("");
 
 }
 
 
 /* =========================
-   SPECIES PAGE
+   SPECIES DETAIL
 ========================= */
 
-async function openBird(id){
+function openBird(id){
 
   const bird=
     birds.find(
@@ -1195,6 +1114,10 @@ async function openBird(id){
 
   const info=
     details[id]||{};
+
+
+  const birdPhotos=
+    photos[id]||[];
 
 
   const seen=
@@ -1222,7 +1145,6 @@ async function openBird(id){
       )}
     </h1>
 
-
     <p class="sci">
       ${escapeHTML(
         bird.scientific||""
@@ -1231,7 +1153,6 @@ async function openBird(id){
 
 
     <div class="info-grid">
-
 
       <div class="info">
 
@@ -1261,25 +1182,20 @@ async function openBird(id){
 
         <b>Conservation</b>
 
-        <span class="${statusClass(conservation)}">
-          ${prettyStatus(conservation)}
-        </span>
+        ${prettyStatus(
+          conservation
+        )}
 
       </div>
 
 
       <div class="info">
 
-        <b>GBIF match</b>
+        <b>Photos</b>
 
-        ${
-          info.gbif_key
-          ? "✓ Verified"
-          : "Not matched"
-        }
+        ${birdPhotos.length}
 
       </div>
-
 
     </div>
 
@@ -1329,55 +1245,62 @@ async function openBird(id){
     }
 
 
-    ${
-      info.size_mm
-      ? `
-        <div class="detail-section">
-
-          <h3>📏 Size</h3>
-
-          <p>
-            ${escapeHTML(
-              JSON.stringify(
-                info.size_mm
-              )
-            )}
-          </p>
-
-        </div>
-      `
-      : ""
-    }
-
-
-    ${
-      info.mass_g
-      ? `
-        <div class="detail-section">
-
-          <h3>⚖️ Mass</h3>
-
-          <p>
-            ${escapeHTML(
-              JSON.stringify(
-                info.mass_g
-              )
-            )}
-          </p>
-
-        </div>
-      `
-      : ""
-    }
-
-
     <div class="detail-section">
 
-      <h3>📸 Photos</h3>
+      <h3>📸 Photographs</h3>
 
-      <div id="photos">
-        Loading licensed photographs...
-      </div>
+      ${
+        birdPhotos.length
+        ? `
+          <div class="photos">
+
+            ${
+              birdPhotos
+                .map(photo=>`
+
+                  <div class="photo-card">
+
+                    <img
+                      src="${escapeAttribute(
+                        photo.url
+                      )}"
+                      alt="${escapeAttribute(
+                        bird.name
+                      )}"
+                      loading="lazy"
+                    >
+
+                    <div class="credit">
+
+                      ${escapeHTML(
+                        photo.attribution||
+                        "Photographer not supplied"
+                      )}
+
+                      <br>
+
+                      Licence:
+                      ${escapeHTML(
+                        photo.license||
+                        "open licence"
+                      )}
+
+                    </div>
+
+                  </div>
+
+                `)
+                .join("")
+            }
+
+          </div>
+        `
+        : `
+          <div class="empty">
+            No suitable photograph was found.
+          </div>
+        `
+      }
 
     </div>
 
@@ -1411,7 +1334,7 @@ async function openBird(id){
       <h3>📝 My field notes</h3>
 
       <textarea
-        id="note-${escapeHTML(id)}"
+        id="note-${escapeAttribute(id)}"
         class="notes"
         placeholder="Record where, when and how you saw this bird..."
       >${escapeHTML(
@@ -1429,7 +1352,7 @@ async function openBird(id){
         </button>
 
         <span
-          id="saved-${escapeHTML(id)}"
+          id="saved-${escapeAttribute(id)}"
           class="saved"
         ></span>
 
@@ -1451,14 +1374,14 @@ async function openBird(id){
               info.sources
                 .map(source=>{
 
-                  if(
-                    source.species_api
-                  ){
+                  if(source.species_api){
 
                     return `
-                      GBIF Species API:
+                      GBIF Species API —
                       <a
-                        href="${source.species_api}"
+                        href="${escapeAttribute(
+                          source.species_api
+                        )}"
                         target="_blank"
                         rel="noopener"
                       >
@@ -1489,141 +1412,46 @@ async function openBird(id){
 
   modal.style.display="flex";
 
+}
 
-  loadPhotos(bird);
+
+function getNote(id){
+
+  return localStorage.getItem(
+    "note-"+id
+  )||"";
 
 }
 
 
-/* =========================
-   PHOTOS
-========================= */
+function saveNote(id){
 
-async function loadPhotos(bird){
-
-  const container=
+  const box=
     document.getElementById(
-      "photos"
+      "note-"+id
     );
 
+  if(!box)return;
 
-  const data=await api(
-    "taxon_name="+
-    encodeURIComponent(
-      bird.scientific
-    )
+  localStorage.setItem(
+    "note-"+id,
+    box.value
   );
 
+  const saved=
+    document.getElementById(
+      "saved-"+id
+    );
 
-  let all=[];
+  if(saved){
 
+    saved.textContent="Saved ✓";
 
-  for(
-    const observation
-    of data.results||[]
-  ){
-
-    for(
-      const photo
-      of observation.photos||[]
-    ){
-
-      if(
-
-        [
-          "cc0",
-          "cc-by",
-          "cc-by-sa"
-        ].includes(
-          photo.license_code
-        )
-
-        &&
-
-        !all.some(
-          x=>x.id===photo.id
-        )
-
-      ){
-
-        all.push({
-          ...photo,
-          observation
-        });
-
-      }
-
-    }
+    setTimeout(()=>{
+      saved.textContent="";
+    },1500);
 
   }
-
-
-  all=all.slice(0,6);
-
-
-  if(!all.length){
-
-    container.innerHTML=`
-
-      <div class="empty">
-
-        No suitable openly licensed
-        photographs found.
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  container.innerHTML=`
-
-    <div class="photos">
-
-      ${
-        all.map(photo=>`
-
-          <div>
-
-            <img
-              src="${
-                photo.url||
-                photo.original_url
-              }"
-              alt="${escapeHTML(
-                bird.name
-              )}"
-              loading="lazy"
-            >
-
-            <div class="credit">
-
-              ${escapeHTML(
-                photo.attribution||
-                "Photographer not supplied"
-              )}
-
-              <br>
-
-              Licence:
-              ${escapeHTML(
-                photo.license_code||
-                "open licence"
-              )}
-
-            </div>
-
-          </div>
-
-        `).join("")
-      }
-
-    </div>
-
-  `;
 
 }
 
@@ -1665,7 +1493,6 @@ const countries={
   PE:"🇵🇪 Peru",
   NP:"🇳🇵 Nepal",
   SA:"🇸🇦 Saudi Arabia",
-
   AE:"🇦🇪 United Arab Emirates",
 
   Africa:"🌍 Africa",
@@ -1675,17 +1502,8 @@ const countries={
 
 
 const eastAfricanCodes=[
-  "KE",
-  "TZ",
-  "UG",
-  "RW",
-  "BI",
-  "ET",
-  "SS",
-  "SD",
-  "SO",
-  "ER",
-  "DJ"
+  "KE","TZ","UG","RW","BI",
+  "ET","SS","SD","SO","ER","DJ"
 ];
 
 
@@ -1696,9 +1514,7 @@ function countryTag(code){
     code;
 
   const east=
-    eastAfricanCodes.includes(
-      code
-    );
+    eastAfricanCodes.includes(code);
 
 
   return `
@@ -1714,56 +1530,6 @@ function countryTag(code){
     </span>
 
   `;
-
-}
-
-
-/* =========================
-   CONSERVATION
-========================= */
-
-function prettyStatus(status){
-
-  if(!status)return"Not recorded";
-
-
-  return status
-    .replaceAll("_"," ")
-    .toLowerCase()
-    .replace(
-      /\b\w/g,
-      c=>c.toUpperCase()
-    );
-
-}
-
-
-function statusClass(status){
-
-  const s=
-    String(status)
-      .toUpperCase();
-
-
-  if(
-    s.includes("CRITICALLY")
-  ){
-    return "critical";
-  }
-
-  if(
-    s.includes("ENDANGERED")
-  ){
-    return "endangered";
-  }
-
-  if(
-    s.includes("VULNERABLE")
-  ){
-    return "vulnerable";
-  }
-
-  return "status";
 
 }
 
@@ -1883,9 +1649,9 @@ function about(){
       <h3>📸 Photography</h3>
 
       <p>
-        Photographs are retrieved from
-        iNaturalist and filtered to
-        CC0, CC BY and CC BY-SA licences.
+        Photographs are sourced from iNaturalist
+        and restricted to CC0, CC BY and
+        CC BY-SA licences.
       </p>
 
     </div>
@@ -1893,12 +1659,11 @@ function about(){
 
     <div class="detail-section">
 
-      <h3>⭐ Your Life List</h3>
+      <h3>⭐ Life List</h3>
 
       <p>
         Your observations and field notes are
-        stored locally in your browser.
-        They are not uploaded to the website.
+        stored locally on this device.
       </p>
 
     </div>
@@ -1935,7 +1700,7 @@ modal.addEventListener(
 
 
 /* =========================
-   HTML SAFETY
+   SECURITY
 ========================= */
 
 function escapeHTML(value){
@@ -1946,6 +1711,13 @@ function escapeHTML(value){
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
+
+}
+
+
+function escapeAttribute(value){
+
+  return escapeHTML(value);
 
 }
 
