@@ -1,0 +1,10 @@
+{
+  "name": "East African Birds — Digital Field Guide",
+  "short_name": "EA Birds",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#eef2ec",
+  "theme_color": "#173f2c",
+  "description": "Digital field guide to the birds of Kenya, Tanzania, Uganda, Rwanda and Burundi.",
+  "icons": []
+}
