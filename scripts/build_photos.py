@@ -21,17 +21,12 @@ OPEN_LICENSES = {
     "cc-by-sa",
 }
 
+
 # ============================================================
-# TEST MODE
-#
-# Leave this at 5 for now.
-#
-# Once the test works, change it to:
-#
-# TEST_LIMIT = None
+# PROCESS ALL 1,851 SPECIES
 # ============================================================
 
-TEST_LIMIT = 5
+TEST_LIMIT = None
 
 
 session = requests.Session()
@@ -108,7 +103,7 @@ def save_database(database):
 
 
 # ============================================================
-# TEXT
+# TEXT HELPERS
 # ============================================================
 
 def clean_text(value):
@@ -447,6 +442,7 @@ def inat_search(
     # 9 = Sex
     # 10 = Female
     # 11 = Male
+
     if sex == "male":
 
         params["term_id"] = "9"
@@ -460,6 +456,7 @@ def inat_search(
     # Life stage:
     # 1 = Life Stage
     # 8 = Juvenile
+
     elif juvenile:
 
         params["term_id"] = "1"
@@ -612,7 +609,7 @@ def first_inat_photo(
 
 
 # ============================================================
-# ONE SPECIES
+# BUILD ONE SPECIES
 # ============================================================
 
 def build_species(
@@ -644,8 +641,6 @@ def build_species(
         "male"
     )
 
-    # If iNaturalist doesn't have one,
-    # try Wikimedia's male search.
     if male:
 
         result["male"].append(
@@ -733,7 +728,7 @@ def build_species(
         )
 
     # --------------------------------------------------------
-    # THREE GENERAL PHOTOS
+    # THREE ADDITIONAL PHOTOS
     # --------------------------------------------------------
 
     print(
@@ -853,6 +848,7 @@ def main():
             f"{len(result['general'])}"
         )
 
+        # Save after every species.
         save_database(
             existing
         )
@@ -864,24 +860,19 @@ def main():
         "=========================================="
     )
     print(
-        "PHOTO TEST COMPLETE"
+        "PHOTO DATABASE COMPLETE"
     )
     print(
         "=========================================="
     )
 
-    if TEST_LIMIT is not None:
+    print(
+        f"Processed: {len(selected)} species"
+    )
 
-        print(
-            "Processed only the first "
-            f"{TEST_LIMIT} species."
-        )
-
-        print()
-        print(
-            "If the male/female photos look "
-            "correct, change TEST_LIMIT to None."
-        )
+    print(
+        "The photo database has been saved."
+    )
 
 
 if __name__ == "__main__":
