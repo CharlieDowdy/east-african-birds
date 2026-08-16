@@ -30,7 +30,6 @@ jobs:
               raise SystemExit("data/species.json does not exist")
 
           data = json.loads(path.read_text(encoding="utf-8"))
-
           species = data.get("species", [])
 
           print(f"Bird database contains {len(species)} species")
@@ -39,6 +38,27 @@ jobs:
               raise SystemExit("No species found in species.json")
 
           print("Bird database check passed")
+          PY
+
+      - name: Prepare photo database for the website
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("data/photos.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+
+          # The photo builder stores the species mapping under a `species`
+          # wrapper, while the website reads photo records by bird ID.
+          # Flatten it in the deployed copy so the existing website code
+          # continues to work without changing the source photo database.
+          if isinstance(data, dict) and isinstance(data.get("species"), dict):
+              data = data["species"]
+              path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+              print(f"Flattened photo database: {len(data)} species")
+          else:
+              print("Photo database already uses the website-compatible shape")
           PY
 
       - name: Bust browser cache for photo database
@@ -54,9 +74,6 @@ jobs:
           text = path.read_text(encoding="utf-8")
           sha = os.environ["BUILD_SHA"][:12]
 
-          # Any direct reference to data/photos.json gets a unique URL on
-          # every deployment, preventing an old photo database from being
-          # served from a browser/CDN cache.
           text = re.sub(
               r"data/photos\.json(?:\?[^\"']*)?",
               f"data/photos.json?v={sha}",
