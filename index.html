@@ -7,9 +7,7 @@
 <title>East African Birds</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -20,7 +18,7 @@ body{
 
 header{
   background:#123b2a;
-  color:white;
+  color:#fff;
   padding:28px 18px 24px;
   border-radius:0 0 30px 30px;
 }
@@ -51,25 +49,57 @@ main{
   outline:none;
 }
 
+.filterTitle{
+  font-weight:700;
+  margin-top:17px;
+  margin-bottom:7px;
+  color:#123b2a;
+}
+
 .bar{
   display:flex;
   gap:8px;
   overflow:auto;
-  padding:13px 0;
+  padding:8px 0 13px;
 }
 
 .chip{
   border:1px solid #d5ddd5;
-  background:white;
+  background:#fff;
   border-radius:99px;
   padding:9px 14px;
   white-space:nowrap;
   cursor:pointer;
+  font-size:14px;
 }
 
 .chip.on{
   background:#123b2a;
-  color:white;
+  color:#fff;
+  border-color:#123b2a;
+}
+
+.countryBar{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding:8px 0 14px;
+}
+
+.countryChip{
+  border:1px solid #d5ddd5;
+  background:#fff;
+  border-radius:99px;
+  padding:10px 14px;
+  white-space:nowrap;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.countryChip.on{
+  background:#123b2a;
+  color:#fff;
+  border-color:#123b2a;
 }
 
 .stats{
@@ -79,7 +109,7 @@ main{
 }
 
 .stat{
-  background:white;
+  background:#fff;
   border-radius:15px;
   padding:13px;
   flex:1;
@@ -98,7 +128,7 @@ main{
 }
 
 .card{
-  background:white;
+  background:#fff;
   border-radius:20px;
   padding:14px;
   box-shadow:0 4px 16px #0001;
@@ -153,7 +183,7 @@ main{
   border-radius:11px;
   padding:10px 14px;
   background:#123b2a;
-  color:white;
+  color:#fff;
   font-weight:600;
   margin-top:11px;
   cursor:pointer;
@@ -174,7 +204,7 @@ main{
 }
 
 .sheet{
-  background:white;
+  background:#fff;
   width:100%;
   max-width:900px;
   margin:auto;
@@ -211,8 +241,6 @@ main{
   color:#123b2a;
 }
 
-/* FULL-SIZE SPECIES PHOTOS
-   These no longer crop the bird. */
 .photoGrid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
@@ -272,7 +300,7 @@ main{
 }
 
 .lifeCard{
-  background:white;
+  background:#fff;
   padding:15px;
   border-radius:17px;
   margin-bottom:10px;
@@ -288,7 +316,7 @@ main{
 .tabs{
   position:sticky;
   bottom:9px;
-  background:white;
+  background:#fff;
   border-radius:18px;
   padding:7px;
   display:flex;
@@ -314,7 +342,7 @@ main{
   }
 
   .stat:last-child{
-    grid-column:1 / -1;
+    grid-column:1/-1;
   }
 
   .sheet{
@@ -351,7 +379,13 @@ main{
     autocomplete="off"
   >
 
-  <div id="bar" class="bar"></div>
+  <!-- COUNTRY FILTER -->
+  <div class="filterTitle">🌍 Country</div>
+  <div id="countryBar" class="countryBar"></div>
+
+  <!-- FAMILY FILTER -->
+  <div class="filterTitle">🐦 Family</div>
+  <div id="familyBar" class="bar"></div>
 
   <div class="stats">
 
@@ -413,10 +447,7 @@ main{
 
   <div class="sheet">
 
-    <button
-      class="x"
-      onclick="closeModal()"
-    >×</button>
+    <button class="x" onclick="closeModal()">×</button>
 
     <div id="detail"></div>
 
@@ -429,15 +460,98 @@ main{
 
 let birds = [];
 let photos = {};
+let details = {};
+
 let family = "All";
+let country = "All";
 
 const q = document.getElementById("q");
-const bar = document.getElementById("bar");
+const familyBar = document.getElementById("familyBar");
+const countryBar = document.getElementById("countryBar");
 const grid = document.getElementById("grid");
 const loaded = document.getElementById("loaded");
 const photoCount = document.getElementById("photoCount");
 const modal = document.getElementById("modal");
 const detail = document.getElementById("detail");
+
+
+// ============================================================
+// COUNTRY LIST
+// ============================================================
+
+const countries = [
+
+  {
+    code:"KE",
+    name:"🇰🇪 Kenya"
+  },
+
+  {
+    code:"TZ",
+    name:"🇹🇿 Tanzania"
+  },
+
+  {
+    code:"UG",
+    name:"🇺🇬 Uganda"
+  },
+
+  {
+    code:"RW",
+    name:"🇷🇼 Rwanda"
+  },
+
+  {
+    code:"BI",
+    name:"🇧🇮 Burundi"
+  },
+
+  {
+    code:"SS",
+    name:"🇸🇸 South Sudan"
+  },
+
+  {
+    code:"ET",
+    name:"🇪🇹 Ethiopia"
+  },
+
+  {
+    code:"SO",
+    name:"🇸🇴 Somalia"
+  },
+
+  {
+    code:"DJ",
+    name:"🇩🇯 Djibouti"
+  },
+
+  {
+    code:"ER",
+    name:"🇪🇷 Eritrea"
+  },
+
+  {
+    code:"SD",
+    name:"🇸🇩 Sudan"
+  },
+
+  {
+    code:"ZM",
+    name:"🇿🇲 Zambia"
+  },
+
+  {
+    code:"MZ",
+    name:"🇲🇿 Mozambique"
+  },
+
+  {
+    code:"MW",
+    name:"🇲🇼 Malawi"
+  }
+
+];
 
 
 // ============================================================
@@ -450,15 +564,20 @@ Promise.all([
     .then(r => r.json()),
 
   fetch("data/photos.json")
+    .then(r => r.json()),
+
+  fetch("data/species_details.json")
     .then(r => r.json())
 
 ])
 
-.then(([speciesData, photoData]) => {
+.then(([speciesData, photoData, detailData]) => {
 
   birds = speciesData.species || [];
 
   photos = photoData.species || {};
+
+  details = detailData.species || {};
 
   loaded.textContent = birds.length;
 
@@ -512,15 +631,98 @@ q.addEventListener("input", render);
 
 
 // ============================================================
+// COUNTRY FILTER
+// ============================================================
+
+function renderCountries(){
+
+  countryBar.innerHTML = `
+
+    <button
+      class="countryChip ${country === "All" ? "on" : ""}"
+      onclick="setCountry('All')"
+    >
+      🌍 All countries
+    </button>
+
+    ${
+      countries.map(c => `
+
+        <button
+          class="countryChip ${country === c.code ? "on" : ""}"
+          onclick="setCountry('${c.code}')"
+        >
+          ${c.name}
+        </button>
+
+      `).join("")
+    }
+
+  `;
+
+}
+
+
+function setCountry(code){
+
+  country = code;
+
+  render();
+
+}
+
+
+// ============================================================
+// CHECK COUNTRY
+// ============================================================
+
+function birdIsInCountry(bird){
+
+  if (country === "All") {
+    return true;
+  }
+
+
+  const d =
+    details[bird.id];
+
+
+  if (
+    !d ||
+    !Array.isArray(d.distribution)
+  ){
+    return false;
+  }
+
+
+  /*
+    GBIF distribution contains many different
+    types of entries.
+
+    We ONLY treat an exact ISO-style country
+    code as evidence for the country filter.
+
+    This means "Africa" and "Global" do NOT
+    incorrectly make a bird appear in every
+    country.
+  */
+
+  return d.distribution.some(
+    item =>
+      String(item).trim().toUpperCase()
+      === country
+  );
+
+}
+
+
+// ============================================================
 // RENDER
 // ============================================================
 
 function render(){
 
-  const query =
-    q.value
-      .toLowerCase()
-      .trim();
+  renderCountries();
 
 
   const families = [
@@ -536,19 +738,14 @@ function render(){
   ];
 
 
-  bar.innerHTML =
+  familyBar.innerHTML =
     families.map(f => {
-
-      const safe =
-        String(f)
-          .replace(/'/g,"\\'");
-
 
       return `
 
         <button
           class="chip ${f === family ? "on" : ""}"
-          onclick="setFamily('${safe}')"
+          onclick="setFamily(${JSON.stringify(f)})"
         >
           ${escapeHTML(f)}
         </button>
@@ -556,6 +753,12 @@ function render(){
       `;
 
     }).join("");
+
+
+  const query =
+    q.value
+      .toLowerCase()
+      .trim();
 
 
   const list =
@@ -566,6 +769,10 @@ function render(){
         x.family === family;
 
 
+      const countryMatch =
+        birdIsInCountry(x);
+
+
       const text =
         `${x.name || ""}
          ${x.scientific || ""}
@@ -574,8 +781,15 @@ function render(){
         .toLowerCase();
 
 
-      return familyMatch &&
+      const searchMatch =
         text.includes(query);
+
+
+      return (
+        familyMatch &&
+        countryMatch &&
+        searchMatch
+      );
 
     });
 
@@ -589,14 +803,23 @@ function render(){
         <h2>No birds found</h2>
 
         <p>
-          Try another search.
+          No species in the database match
+          these filters.
         </p>
+
+        <button
+          class="btn"
+          onclick="clearFilters()"
+        >
+          Clear filters
+        </button>
 
       </div>
 
     `;
 
     return;
+
   }
 
 
@@ -613,6 +836,23 @@ function render(){
 function setFamily(value){
 
   family = value;
+
+  render();
+
+}
+
+
+// ============================================================
+// CLEAR FILTERS
+// ============================================================
+
+function clearFilters(){
+
+  family = "All";
+
+  country = "All";
+
+  q.value = "";
 
   render();
 
@@ -746,10 +986,8 @@ function firstPhoto(p){
   for (const type of order){
 
     if (
-
       Array.isArray(p[type]) &&
       p[type].length
-
     ){
 
       return p[type][0];
@@ -781,6 +1019,10 @@ function openBird(id){
 
   const p =
     photos[id] || {};
+
+
+  const d =
+    details[id] || {};
 
 
   const male =
@@ -862,6 +1104,7 @@ function openBird(id){
 
           ${escapeHTML(
             formatStatus(
+              d.conservation_status ||
               bird.status ||
               "Not recorded"
             )
@@ -1003,8 +1246,7 @@ function photoSection(
 
         <div class="noPhoto">
 
-          No suitable
-          ${type}
+          No suitable ${type}
           photograph was found.
 
         </div>
@@ -1127,12 +1369,10 @@ function addLife(id){
 
     list.push(id);
 
-
     localStorage.setItem(
       "life",
       JSON.stringify(list)
     );
-
 
     alert(
       "Added to your Life List ⭐"
@@ -1187,11 +1427,9 @@ function showLife(){
 
 
         <p>
-
           Open a species and press
           "Add to Life List" when you
           record a bird.
-
         </p>
 
       </div>
@@ -1315,9 +1553,11 @@ Avibase Eastern Africa checklist
 Taxonomy:
 Clements 2025
 
+Species information:
+GBIF Species API
+
 Photographs:
-Wikimedia Commons
-iNaturalist
+Wikimedia Commons / existing photo database
 
 The app does not use AI bird identification.`
 
@@ -1363,12 +1603,7 @@ function formatStatus(status){
 
 
   return String(status)
-
-    .replaceAll(
-      "_",
-      " "
-    )
-
+    .replaceAll("_"," ")
     .replace(
       /\b\w/g,
       c => c.toUpperCase()
@@ -1379,34 +1614,13 @@ function formatStatus(status){
 
 function escapeHTML(value){
 
-  return String(
-    value ?? ""
-  )
+  return String(value ?? "")
 
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
