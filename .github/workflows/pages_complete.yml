@@ -41,6 +41,32 @@ jobs:
           print("Bird database check passed")
           PY
 
+      - name: Bust browser cache for photo database
+        env:
+          BUILD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          import os
+
+          path = Path("index.html")
+          text = path.read_text(encoding="utf-8")
+          sha = os.environ["BUILD_SHA"][:12]
+
+          # Any direct reference to data/photos.json gets a unique URL on
+          # every deployment, preventing an old photo database from being
+          # served from a browser/CDN cache.
+          text = re.sub(
+              r"data/photos\.json(?:\?[^\"']*)?",
+              f"data/photos.json?v={sha}",
+              text,
+          )
+
+          path.write_text(text, encoding="utf-8")
+          print(f"Photo database cache key: {sha}")
+          PY
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
