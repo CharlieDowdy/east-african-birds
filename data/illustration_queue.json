@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "status": "queued",
+  "instructions": "Populate per species only after confirming the illustration depicts the current taxon and the source permits reuse. Do not substitute a visually similar species. Keep the existing photograph until a verified illustration is available.",
+  "fields": ["species_id", "image_url", "source_url", "source_title", "artist", "date", "licence", "depicts", "verification_notes"]
+}
